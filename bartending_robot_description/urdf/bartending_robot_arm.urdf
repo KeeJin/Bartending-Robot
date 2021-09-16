@@ -1,0 +1,159 @@
+<?xml version="1.0" ?>
+<robot name="bartending_robot_arm">
+    
+    <!-- base to shoulder -->
+    <link name="base_link">
+        <visual>
+            <geometry><cylinder radius="0.05" length="0.05" /></geometry>
+        </visual>
+        <inertial>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <mass value="3"/>
+            <inertia
+                ixx="1.0" ixy="0.0" ixz="0.0"
+                iyy="1.0" iyz="0.0"
+                izz="1.0"/>
+        </inertial>
+        <collision>
+            <geometry><cylinder radius="0.05" length="0.05" /></geometry>
+        </collision>
+    </link>
+
+    <link name="base_link_offset">
+        <visual>
+            <origin xyz="0 0 0.0125" />
+            <geometry><cylinder radius="0.015" length="0.025" /></geometry>
+        </visual>
+        <inertial>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <mass value="0.1"/>
+            <inertia
+                ixx="1.0" ixy="0.0" ixz="0.0"
+                iyy="1.0" iyz="0.0"
+                izz="1.0"/>
+        </inertial>
+        <collision>
+            <origin xyz="0 0 0.0125" />
+            <geometry><cylinder radius="0.015" length="0.025" /></geometry>
+        </collision>
+    </link>
+
+    <joint name="base_z_rot" type="revolute">
+        <origin xyz="0 0 0.025"/>
+        <parent link="base_link"/>
+        <child link="base_link_offset"/>
+        <axis xyz="0 0 1"/>
+        <limit effort="0" lower="-1.953" upper="1.319" velocity="1.0"/>
+    </joint>
+
+    <!-- shoulder to elbow -->
+    <link name="upper_link">
+        <visual>
+            <origin xyz="0 0 0.0575" />
+            <geometry><box size="0.03 0.05 0.115" /></geometry>
+        </visual>
+        <inertial>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <mass value="0.15"/>
+            <inertia
+                ixx="1.0" ixy="0.0" ixz="0.0"
+                iyy="1.0" iyz="0.0"
+                izz="1.0"/>
+        </inertial>
+        <collision>
+            <origin xyz="0 0 0.0575" />
+            <geometry><box size="0.03 0.05 0.115" /></geometry>
+        </collision>
+    </link>
+
+    <joint name="base_y_rot" type="revolute">
+        <origin xyz="-0.0075 0 0.025"/>
+        <parent link="base_link_offset"/>
+        <child link="upper_link"/>
+        <axis xyz="0 1 0"/>
+        <limit effort="0" lower="-1.311" upper="0.964" velocity="1.0"/>
+    </joint>
+
+    <!-- elbow to wrist -->
+    <link name="lower_link">
+        <visual>
+            <origin xyz="0 0 0.047" />
+            <geometry><box size="0.03 0.05 0.094" /></geometry>
+        </visual>
+        <inertial>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <mass value="0.15"/>
+            <inertia
+                ixx="1.0" ixy="0.0" ixz="0.0"
+                iyy="1.0" iyz="0.0"
+                izz="1.0"/>
+        </inertial>
+        <collision>
+            <origin xyz="0 0 0.047" />
+            <geometry><box size="0.03 0.05 0.094" /></geometry>
+        </collision>
+    </link>
+
+    <joint name="elbow_y_rot" type="revolute">
+        <origin xyz="0 0 0.115"/>
+        <parent link="upper_link"/>
+        <child link="lower_link"/>
+        <axis xyz="0 1 0"/>
+        <limit effort="0" lower="-1.734" upper="1.616" velocity="1.0"/>
+    </joint>
+
+    <!-- wrist to tooltip -->
+    <link name="end_effector_link">
+        <visual>
+            <origin xyz="0 0 0.038" />
+            <geometry><box size="0.03 0.05 0.076" /></geometry>
+        </visual>
+        <inertial>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <mass value="0.15"/>
+            <inertia
+                ixx="1.0" ixy="0.0" ixz="0.0"
+                iyy="1.0" iyz="0.0"
+                izz="1.0"/>
+        </inertial>
+        <collision>
+            <origin xyz="0 0 0.038" />
+            <geometry><box size="0.03 0.05 0.076" /></geometry>
+        </collision>
+    </link>
+
+    <joint name="wrist_y_rot" type="revolute">
+        <origin xyz="0 0 0.094"/>
+        <parent link="lower_link"/>
+        <child link="end_effector_link"/>
+        <axis xyz="0 1 0"/>
+        <limit effort="0" lower="-2.054" upper="1.781" velocity="1.0"/>
+    </joint>
+
+    <!-- tooltip -->
+    <link name="tooltip_mount">
+        <visual>
+            <origin xyz="0 0 0.0145" />
+            <geometry><box size="0.05 0.05 0.029" /></geometry>
+        </visual>
+        <inertial>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <mass value="0.15"/>
+            <inertia
+                ixx="1.0" ixy="0.0" ixz="0.0"
+                iyy="1.0" iyz="0.0"
+                izz="1.0"/>
+        </inertial>
+        <collision>
+            <origin xyz="0 0 0.0145" />
+            <geometry><box size="0.05 0.05 0.029" /></geometry>
+        </collision>
+    </link>
+
+    <joint name="gripper_mount" type="fixed">
+        <origin xyz="-0.012 0 0.076"/>
+        <parent link="end_effector_link"/>
+        <child link="tooltip_mount"/>
+    </joint>
+
+</robot>
