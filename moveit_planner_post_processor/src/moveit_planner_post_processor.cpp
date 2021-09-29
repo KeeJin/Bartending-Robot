@@ -1,13 +1,19 @@
 #include "moveit_planner_post_processor.hpp"
 
-MoveitPlannerPostProcessor::MoveitPlannerPostProcessor() : nh_(""), priv_nh_("~") {
+#include <trajectory_msgs/JointTrajectory.h>
+#include <trajectory_msgs/JointTrajectoryPoint.h>
+#include <geometry_msgs/PoseStamped.h>
+#include <moveit_msgs/AttachedCollisionObject.h>
+#include <moveit_msgs/CollisionObject.h>
+
+MoveitPlannerPostProcessor::MoveitPlannerPostProcessor()
+    : nh_(""), priv_nh_("~") {
   // Init parameter
   planning_group_ =
       priv_nh_.param<std::string>("planning_group", "manipulator");
   move_group_ =
       new moveit::planning_interface::MoveGroupInterface(planning_group_);
-      InitPublisher();
-      InitSubscriber();
+  Initialise();
 }
 
 MoveitPlannerPostProcessor::~MoveitPlannerPostProcessor() {
@@ -15,20 +21,46 @@ MoveitPlannerPostProcessor::~MoveitPlannerPostProcessor() {
   return;
 }
 
-void MoveitPlannerPostProcessor::InitPublisher() {
+void MoveitPlannerPostProcessor::Initialise() {
+  // Create base collision object
+  // moveit_msgs::CollisionObject collision_object;
+  // collision_object.header.frame_id = move_group_->getPlanningFrame();
+  // collision_object.id = "table_boundary";
+  // shape_msgs::SolidPrimitive primitive;
+  // primitive.type = primitive.BOX;
+  // primitive.dimensions.resize(3);
+  // primitive.dimensions[0] = 0.4;
+  // primitive.dimensions[1] = 0.4;
+  // primitive.dimensions[2] = 0.1;
+
+  // geometry_msgs::Pose box_pose;
+  // box_pose.orientation.w = 1.0;
+  // box_pose.position.x = 0.0;
+  // box_pose.position.y = 0.0;
+  // box_pose.position.z = -0.05;
+
+  // collision_object.primitives.push_back(primitive);
+  // collision_object.primitive_poses.push_back(box_pose);
+  // collision_object.operation = collision_object.ADD;
+
+  // std::vector<moveit_msgs::CollisionObject> collision_objects;
+  // collision_objects.push_back(collision_object);
+
+  // ROS_INFO_NAMED("bartender_robot", "Added table base into the world");
+  // planning_scene_interface_.addCollisionObjects(collision_objects);
+
+  // pubs and subs
   dynamixel_workbench_pub_ =
       priv_nh_.advertise<trajectory_msgs::JointTrajectory>("joint_trajectory",
                                                            100);
+  display_planned_path_sub_ = nh_.subscribe(
+      "/move_group/display_planned_path", 100,
+      &MoveitPlannerPostProcessor::DisplayPlannedPathMsgCallback, this);
 }
 
-void MoveitPlannerPostProcessor::InitSubscriber() {
-  display_planned_path_sub_ =
-      nh_.subscribe("/move_group/display_planned_path", 100,
-                    &MoveitPlannerPostProcessor::DisplayPlannedPathMsgCallback, this);
-}
-
-bool MoveitPlannerPostProcessor::PlanPath(const std::string planning_group,
-                                   open_manipulator_msgs::KinematicsPose msg) {
+bool MoveitPlannerPostProcessor::PlanPath(
+    const std::string planning_group,
+    open_manipulator_msgs::KinematicsPose msg) {
   ros::AsyncSpinner spinner(1);
   spinner.start();
   bool is_planned = false;
@@ -53,8 +85,9 @@ bool MoveitPlannerPostProcessor::PlanPath(const std::string planning_group,
   return is_planned;
 }
 
-bool MoveitPlannerPostProcessor::PlanPath(const std::string planning_group,
-                                   open_manipulator_msgs::JointPosition msg) {
+bool MoveitPlannerPostProcessor::PlanPath(
+    const std::string planning_group,
+    open_manipulator_msgs::JointPosition msg) {
   ros::AsyncSpinner spinner(1);
   spinner.start();
   bool is_planned = false;
@@ -94,8 +127,9 @@ void MoveitPlannerPostProcessor::DisplayPlannedPathMsgCallback(
   ROS_INFO("Obtained Planned Path");
   trajectory_msgs::JointTrajectory jnt_tra =
       msg->trajectory[0].joint_trajectory;
-  // std::cout << "Number of points: " << jnt_tra.points.size() << std::endl;
-  for (trajectory_msgs::JointTrajectoryPoint& point : jnt_tra.points) {
+
+  // Add offsets before publishing trajectories
+  for (trajectory_msgs::JointTrajectoryPoint &point : jnt_tra.points) {
     for (int i = 0; i < 5; ++i) {
       point.positions[i] += angle_offset_[i];
     }

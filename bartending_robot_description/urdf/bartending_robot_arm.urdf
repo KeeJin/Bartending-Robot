@@ -6,14 +6,14 @@
         <visual>
             <geometry><box size="0.2 0.12 0.015" /></geometry>
         </visual>
-        <inertial>
+        <!-- <inertial>
             <origin xyz="0 0 0" rpy="0 0 0"/>
             <mass value="5"/>
             <inertia
                 ixx="1.0" ixy="0.0" ixz="0.0"
                 iyy="1.0" iyz="0.0"
                 izz="1.0"/>
-        </inertial>
+        </inertial> -->
         <collision>
             <geometry><box size="0.2 0.12 0.015" /></geometry>
         </collision>
@@ -205,7 +205,7 @@
         <parent link="tooltip_mount"/>
         <child link="gripper_link"/>
         <axis xyz="0 0 1"/>
-        <limit effort="0" lower="-1.734" upper="1.616" velocity="1.0"/>
+        <limit effort="0" lower="-3.14" upper="3.14" velocity="1.0"/>
     </joint>
 
 
