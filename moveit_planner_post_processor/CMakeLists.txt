@@ -20,6 +20,7 @@ find_package(catkin REQUIRED COMPONENTS
   moveit_core
   moveit_ros_planning
   moveit_ros_planning_interface
+  rviz_visual_tools # debug
 )
 
 ################################################################################

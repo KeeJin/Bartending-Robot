@@ -12,7 +12,5 @@ controller_list:
     joints:
       - gripper_z_rot
 initial:  # Define initial robot poses.
-#  - group: bartender_arm
-#    pose: home
-
-  []
+  - group: bartender_arm
+    pose: home

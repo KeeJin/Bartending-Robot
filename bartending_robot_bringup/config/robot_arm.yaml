@@ -5,7 +5,7 @@ gripper_z_rot:
   CCW_Angle_Limit: 1023
   CW_Compliance_Slope: 62
   CCW_Compliance_Slope: 62
-  Moving_Speed: 300
+  Moving_Speed: 150
   Goal_Position: 0
 
 wrist_y_rot:
@@ -15,7 +15,7 @@ wrist_y_rot:
   CCW_Angle_Limit: 836
   CW_Compliance_Slope: 254
   CCW_Compliance_Slope: 254
-  Moving_Speed: 120
+  Moving_Speed: 80
   Goal_Position: 836
 
 elbow_y_rot:
@@ -25,7 +25,7 @@ elbow_y_rot:
   CCW_Angle_Limit: 835
   CW_Compliance_Slope: 254
   CCW_Compliance_Slope: 254
-  Moving_Speed: 120
+  Moving_Speed: 80
   Goal_Position: 742
 
 base_y_rot:
