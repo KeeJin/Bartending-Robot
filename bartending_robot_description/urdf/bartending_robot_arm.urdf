@@ -67,7 +67,7 @@
         <parent link="base_link"/>
         <child link="base_link_offset"/>
         <axis xyz="0 0 1"/>
-        <limit effort="0" lower="-1.62089" upper="1.6005" velocity="1.0"/>
+        <limit effort="0" lower="-3.14" upper="3.14" velocity="0.2"/>
     </joint>
 
     <!-- shoulder to elbow -->
@@ -95,7 +95,7 @@
         <parent link="base_link_offset"/>
         <child link="upper_link"/>
         <axis xyz="0 1 0"/>
-        <limit effort="0" lower="-1.007" upper="1.447" velocity="1.0"/>
+        <limit effort="0" lower="-1.007" upper="1.447" velocity="0.2"/>
     </joint>
 
     <!-- elbow to wrist -->
@@ -123,7 +123,7 @@
         <parent link="upper_link"/>
         <child link="lower_link"/>
         <axis xyz="0 1 0"/>
-        <limit effort="0" lower="-1.687" upper="1.6619" velocity="1.0"/>
+        <limit effort="0" lower="-1.687" upper="1.6619" velocity="0.2"/>
     </joint>
 
     <!-- wrist to tooltip -->
@@ -151,7 +151,7 @@
         <parent link="lower_link"/>
         <child link="end_effector_link"/>
         <axis xyz="0 1 0"/>
-        <limit effort="0" lower="-1.713" upper="1.6413" velocity="1.0"/>
+        <limit effort="0" lower="-1.713" upper="1.6413" velocity="0.2"/>
     </joint>
 
     <!-- tooltip -->
@@ -205,7 +205,7 @@
         <parent link="tooltip_mount"/>
         <child link="gripper_link"/>
         <axis xyz="0 0 1"/>
-        <limit effort="0" lower="-3.14" upper="3.14" velocity="1.0"/>
+        <limit effort="0" lower="-3.14" upper="3.14" velocity="0.2"/>
     </joint>
 
 

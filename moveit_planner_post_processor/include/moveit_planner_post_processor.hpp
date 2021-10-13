@@ -75,7 +75,7 @@ class MoveitPlannerPostProcessor {
   // joint_names: [base_z_rot, base_y_rot, elbow_y_rot, wrist_y_rot,
   // gripper_z_rot] float angle_offset_[5] = {1.9789, 2.6435, 2.6077, 2.6334,
   // 0.0};  // TODO
-  float angle_offset_[5] = {0.0, 0.0, 0.0, 0.0, 0.0};
+  float angle_offset_[5] = {-0.7, -0.25, 0.0, 0.0, 0.0};
 };
 
 #endif /* MOVEIT_PLANNER_POST_PROCESSOR */

@@ -314,7 +314,7 @@ int main(int argc, char **argv) {
   ros::init(argc, argv, "moveit_bridge");
 
   MoveitPlannerPostProcessor bridge;
-  bridge.TestPlanPath();
+  // bridge.TestPlanPath();
 
   ros::Rate loop_rate(100);
 
