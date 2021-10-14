@@ -1,3 +1,6 @@
 [submodule "dynamixel-workbench-msgs"]
 	path = dynamixel-workbench-msgs
 	url = https://github.com/ROBOTIS-GIT/dynamixel-workbench-msgs.git
+[submodule "open_manipulator_msgs"]
+	path = open_manipulator_msgs
+	url = https://github.com/ROBOTIS-GIT/open_manipulator_msgs.git
