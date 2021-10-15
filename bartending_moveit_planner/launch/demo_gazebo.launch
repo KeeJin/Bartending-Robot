@@ -25,7 +25,7 @@
   <arg name="gazebo_gui" default="true"/>
   <arg name="paused" default="false"/>
   <!-- By default, use the urdf location provided from the package -->
-  <arg name="urdf_path" default="/home/keeejinnn/catkin_ws/src/Bartending-Robot/bartending_robot_description/urdf/bartending_robot_arm.urdf"/>
+  <arg name="urdf_path" default="$(find bartending_robot_description)/urdf/bartending_robot_arm.urdf"/>
 
   <!-- launch the gazebo simulator and spawn the robot -->
   <include file="$(find bartending_moveit_planner)/launch/gazebo.launch" >

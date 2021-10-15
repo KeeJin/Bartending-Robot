@@ -6,7 +6,7 @@
   <arg name="robot_description" default="robot_description"/>
 
   <!-- Load universal robot description format (URDF) -->
-  <param if="$(arg load_robot_description)" name="$(arg robot_description)" textfile="/home/keeejinnn/catkin_ws/src/Bartending-Robot/bartending_robot_description/urdf/bartending_robot_arm.urdf"/>
+  <param if="$(arg load_robot_description)" name="$(arg robot_description)" textfile="$(find bartending_robot_description)/urdf/bartending_robot_arm.urdf"/>
 
   <!-- The semantic description that corresponds to the URDF -->
   <param name="$(arg robot_description)_semantic" textfile="$(find bartending_moveit_planner)/config/bartending_robot_arm.srdf" />
