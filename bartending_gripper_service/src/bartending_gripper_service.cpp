@@ -33,8 +33,8 @@ bool BartendingGripper::Open(std_srvs::Trigger::Request& req,
   return false;
 }
 
-bool BartendingGripper::Close(bartending_gripper::CloseGripper::Request& req,
-                              bartending_gripper::CloseGripper::Response& res) {
+bool BartendingGripper::Close(bartending_gripper_service::CloseGripper::Request& req,
+                              bartending_gripper_service::CloseGripper::Response& res) {
   ROS_INFO("Closing gripper...\n");
   if (req.motor_position < 232) {
     ROS_INFO("Setting motor command to 232.\n");
