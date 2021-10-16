@@ -6,4 +6,13 @@
     <!-- Run Moveit! -->
     <include file="$(find bartending_robot_bringup)/launch/moveit.launch" />
 
+    <!-- Run Moveit! service node -->
+    <include file="$(find bartending_moveit_service)/launch/moveit_bridge.launch" />
+
+    <!-- Run Gripper service node -->
+    <include file="$(find bartending_gripper_service)/launch/gripper_service.launch" />
+
+    <!-- Run main Bartending server -->
+    <include file="$(find bartending_server)/launch/bartending_server.launch" />
+
 </launch>
