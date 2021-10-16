@@ -1,0 +1,9 @@
+<launch>
+
+    <!-- Run Dynamixel controller node -->
+    <include file="$(find bartending_robot_bringup)/launch/dynamixel_controller.launch" />
+
+    <!-- Run Moveit! -->
+    <include file="$(find bartending_robot_bringup)/launch/moveit.launch" />
+
+</launch>

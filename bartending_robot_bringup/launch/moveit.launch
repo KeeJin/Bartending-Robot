@@ -1,8 +1,5 @@
 <launch>
 
-  <!-- Run Dynamixel controller node -->
-  <include file="$(find bartending_robot_bringup)/launch/dynamixel_controller.launch"/>
-
   <!-- specify the planning pipeline -->
   <arg name="pipeline" default="ompl" />
 
@@ -15,6 +12,9 @@
   <!-- Set execution mode for fake execution controllers -->
   <arg name="execution_type" default="interpolate" />
 
+  <arg name="fake_execution" default="false" />
+  <arg name="allow_trajectory_execution" default="false" />
+
   <!--
   By default, hide joint_state_publisher's GUI
 
@@ -26,13 +26,18 @@
   <arg name="use_gui" default="false" />
   <arg name="use_rviz" default="true" />
 
+  <!-- If we do not have a robot connected, so publish fake joint states -->
+  <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher" if="$(arg fake_execution)">
+    <rosparam param="source_list">[move_group/fake_controller_joint_states]</rosparam>
+  </node>
+
   <!-- Given the published joint states, publish tf for the robot links -->
   <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" respawn="true" output="screen" />
 
   <!-- Run the main MoveIt! executable without trajectory execution (we do not have controllers configured by default) -->
   <include file="$(find bartending_moveit_planner)/launch/move_group.launch">
-    <arg name="allow_trajectory_execution" value="false"/>
-    <arg name="fake_execution" value="false"/>
+    <arg name="allow_trajectory_execution" value="$(arg allow_trajectory_execution)"/>
+    <arg name="fake_execution" value="$(arg fake_execution)"/>
     <arg name="execution_type" value="$(arg execution_type)"/>
     <arg name="info" value="true"/>
     <arg name="debug" value="$(arg debug)"/>

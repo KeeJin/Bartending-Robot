@@ -1,4 +1,4 @@
-#include "bartending_gripper.hpp"
+#include "bartending_gripper_service.hpp"
 
 BartendingGripper::BartendingGripper() { Initialise(); }
 

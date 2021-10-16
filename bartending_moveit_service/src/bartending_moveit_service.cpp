@@ -1,4 +1,4 @@
-#include "moveit_planner_post_processor.hpp"
+#include "bartending_moveit_service.hpp"
 
 #include <trajectory_msgs/JointTrajectory.h>
 #include <trajectory_msgs/JointTrajectoryPoint.h>
@@ -75,15 +75,15 @@ void MoveitPlannerPostProcessor::Initialise() {
   get_joint_position_server_ = priv_nh_.advertiseService(
       "moveit/get_joint_position",
       &MoveitPlannerPostProcessor::getJointPositionMsgCallback, this);
-  get_kinematics_pose_server_ = priv_nh_.advertiseService(
-      "moveit/get_kinematics_pose",
-      &MoveitPlannerPostProcessor::getKinematicsPoseMsgCallback, this);
+  // get_kinematics_pose_server_ = priv_nh_.advertiseService(
+  //     "moveit/get_kinematics_pose",
+  //     &MoveitPlannerPostProcessor::getKinematicsPoseMsgCallback, this);
   set_joint_position_server_ = priv_nh_.advertiseService(
       "moveit/set_joint_position",
       &MoveitPlannerPostProcessor::setJointPositionMsgCallback, this);
-  set_kinematics_pose_server_ = priv_nh_.advertiseService(
-      "moveit/set_kinematics_pose",
-      &MoveitPlannerPostProcessor::setKinematicsPoseMsgCallback, this);
+  // set_kinematics_pose_server_ = priv_nh_.advertiseService(
+  //     "moveit/set_kinematics_pose",
+  //     &MoveitPlannerPostProcessor::setKinematicsPoseMsgCallback, this);
 }
 
 bool MoveitPlannerPostProcessor::getJointPositionMsgCallback(
@@ -104,20 +104,20 @@ bool MoveitPlannerPostProcessor::getJointPositionMsgCallback(
   return true;
 }
 
-bool MoveitPlannerPostProcessor::getKinematicsPoseMsgCallback(
-    open_manipulator_msgs::GetKinematicsPose::Request &req,
-    open_manipulator_msgs::GetKinematicsPose::Response &res) {
-  ros::AsyncSpinner spinner(1);
-  spinner.start();
+// bool MoveitPlannerPostProcessor::getKinematicsPoseMsgCallback(
+//     open_manipulator_msgs::GetKinematicsPose::Request &req,
+//     open_manipulator_msgs::GetKinematicsPose::Response &res) {
+//   ros::AsyncSpinner spinner(1);
+//   spinner.start();
 
-  geometry_msgs::PoseStamped current_pose = move_group_->getCurrentPose();
+//   geometry_msgs::PoseStamped current_pose = move_group_->getCurrentPose();
 
-  res.header = current_pose.header;
-  res.kinematics_pose.pose = current_pose.pose;
+//   res.header = current_pose.header;
+//   res.kinematics_pose.pose = current_pose.pose;
 
-  spinner.stop();
-  return true;
-}
+//   spinner.stop();
+//   return true;
+// }
 
 bool MoveitPlannerPostProcessor::setJointPositionMsgCallback(
     open_manipulator_msgs::SetJointPosition::Request &req,
@@ -128,75 +128,75 @@ bool MoveitPlannerPostProcessor::setJointPositionMsgCallback(
   return true;
 }
 
-bool MoveitPlannerPostProcessor::setKinematicsPoseMsgCallback(
-    open_manipulator_msgs::SetKinematicsPose::Request &req,
-    open_manipulator_msgs::SetKinematicsPose::Response &res) {
-  // ROS_INFO_STREAM("Goal's frame id: " << ps.header.frame_id << std::endl;
-  rviz_visual_tools::RvizVisualToolsPtr visual_tools_;
-  visual_tools_.reset(
-      new rviz_visual_tools::RvizVisualTools("base_platform", "/debug"));
-  visual_tools_->publishAxis(req.kinematics_pose.pose);
-  visual_tools_->trigger();
-  open_manipulator_msgs::KinematicsPose msg = req.kinematics_pose;
-  res.is_planned = PlanPath(req.planning_group, msg, false);
+// bool MoveitPlannerPostProcessor::setKinematicsPoseMsgCallback(
+//     open_manipulator_msgs::SetKinematicsPose::Request &req,
+//     open_manipulator_msgs::SetKinematicsPose::Response &res) {
+//   // ROS_INFO_STREAM("Goal's frame id: " << ps.header.frame_id << std::endl;
+//   rviz_visual_tools::RvizVisualToolsPtr visual_tools_;
+//   visual_tools_.reset(
+//       new rviz_visual_tools::RvizVisualTools("base_platform", "/debug"));
+//   visual_tools_->publishAxis(req.kinematics_pose.pose);
+//   visual_tools_->trigger();
+//   open_manipulator_msgs::KinematicsPose msg = req.kinematics_pose;
+//   res.is_planned = PlanPath(req.planning_group, msg, false);
 
-  return true;
-}
+//   return true;
+// }
 
-bool MoveitPlannerPostProcessor::PlanPath(
-    const std::string planning_group, open_manipulator_msgs::KinematicsPose msg,
-    bool grasping) {
-  ros::AsyncSpinner spinner(1);
-  spinner.start();
-  bool is_planned = false;
-  geometry_msgs::Pose target_pose = msg.pose;
+// bool MoveitPlannerPostProcessor::PlanPath(
+//     const std::string planning_group, open_manipulator_msgs::KinematicsPose msg,
+//     bool grasping) {
+//   ros::AsyncSpinner spinner(1);
+//   spinner.start();
+//   bool is_planned = false;
+//   geometry_msgs::Pose target_pose = msg.pose;
 
-  // rviz_visual_tools::RvizVisualToolsPtr visual_tools_;
-  //   visual_tools_.reset(
-  //       new rviz_visual_tools::RvizVisualTools("base_platform", "/debug"));
+//   // rviz_visual_tools::RvizVisualToolsPtr visual_tools_;
+//   //   visual_tools_.reset(
+//   //       new rviz_visual_tools::RvizVisualTools("base_platform", "/debug"));
 
-  //   visual_tools_->publishAxis(target_pose);
-  //   visual_tools_->trigger();
+//   //   visual_tools_->publishAxis(target_pose);
+//   //   visual_tools_->trigger();
 
-  // Apply constraints if needed
-  if (grasping) {
-    moveit_msgs::Constraints constraints;
-    constraints.name = "Level gripper";
-    moveit_msgs::OrientationConstraint orient_constraint;
-    orient_constraint.header.frame_id = "base_platform";
-    orient_constraint.link_name = "gripper_link";
-    orient_constraint.orientation.w = 1.0;
-    orient_constraint.absolute_x_axis_tolerance = 3.14;
-    orient_constraint.absolute_y_axis_tolerance = 3.14;
-    orient_constraint.absolute_z_axis_tolerance = 3.14;
-    orient_constraint.weight = 1.0;
-    constraints.orientation_constraints.push_back(orient_constraint);
-    move_group_->setPathConstraints(constraints);
-  }
+//   // Apply constraints if needed
+//   if (grasping) {
+//     moveit_msgs::Constraints constraints;
+//     constraints.name = "Level gripper";
+//     moveit_msgs::OrientationConstraint orient_constraint;
+//     orient_constraint.header.frame_id = "base_platform";
+//     orient_constraint.link_name = "gripper_link";
+//     orient_constraint.orientation.w = 1.0;
+//     orient_constraint.absolute_x_axis_tolerance = 3.14;
+//     orient_constraint.absolute_y_axis_tolerance = 3.14;
+//     orient_constraint.absolute_z_axis_tolerance = 3.14;
+//     orient_constraint.weight = 1.0;
+//     constraints.orientation_constraints.push_back(orient_constraint);
+//     move_group_->setPathConstraints(constraints);
+//   }
 
-  if (move_group_->setApproximateJointValueTarget(target_pose,
-                                                  "gripper_link")) {
-    ROS_INFO("IK Success.\n");
-  }
-  // move_group_->setPoseTarget(target_pose);
-  // move_group_->setPositionTarget(0.15, 0.04, 0.1);
-  move_group_->setMaxVelocityScalingFactor(msg.max_velocity_scaling_factor);
-  move_group_->setMaxAccelerationScalingFactor(
-      msg.max_accelerations_scaling_factor);
-  move_group_->setGoalTolerance(msg.tolerance);
+//   if (move_group_->setApproximateJointValueTarget(target_pose,
+//                                                   "gripper_link")) {
+//     ROS_INFO("IK Success.\n");
+//   }
+//   // move_group_->setPoseTarget(target_pose);
+//   // move_group_->setPositionTarget(0.15, 0.04, 0.1);
+//   move_group_->setMaxVelocityScalingFactor(msg.max_velocity_scaling_factor);
+//   move_group_->setMaxAccelerationScalingFactor(
+//       msg.max_accelerations_scaling_factor);
+//   move_group_->setGoalTolerance(msg.tolerance);
 
-  moveit::planning_interface::MoveGroupInterface::Plan my_plan;
-  bool success = (move_group_->plan(my_plan) ==
-                  moveit::planning_interface::MoveItErrorCode::SUCCESS);
-  if (success) {
-    is_planned = true;
-  } else {
-    ROS_WARN("Planning (task space goal) FAILED");
-    is_planned = false;
-  }
-  spinner.stop();
-  return is_planned;
-}
+//   moveit::planning_interface::MoveGroupInterface::Plan my_plan;
+//   bool success = (move_group_->plan(my_plan) ==
+//                   moveit::planning_interface::MoveItErrorCode::SUCCESS);
+//   if (success) {
+//     is_planned = true;
+//   } else {
+//     ROS_WARN("Planning (task space goal) FAILED");
+//     is_planned = false;
+//   }
+//   spinner.stop();
+//   return is_planned;
+// }
 
 bool MoveitPlannerPostProcessor::PlanPath(
     const std::string planning_group,
@@ -300,13 +300,13 @@ void MoveitPlannerPostProcessor::TestPlanPath() {
   // goal_pos.position = {-0.6, -0.7791, 0.9736, 1.5542};
   // PlanPath(planning_group_, goal_pos);
 
-  sleep(1);
-  for (int i = 0; i < 10; ++i) {
-    goal_pose.pose = move_group_->getRandomPose().pose;
-    sleep(5);
-    PlanPath(planning_group_, goal_pose, false);
-  }
-  sleep(1);
+  // sleep(1);
+  // for (int i = 0; i < 10; ++i) {
+  //   goal_pose.pose = move_group_->getRandomPose().pose;
+  //   sleep(5);
+  //   PlanPath(planning_group_, goal_pose, false);
+  // }
+  // sleep(1);
   ROS_INFO("Demo complete!\n");
 }
 

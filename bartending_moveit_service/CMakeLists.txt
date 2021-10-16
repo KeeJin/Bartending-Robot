@@ -2,9 +2,8 @@
 # Set minimum required version of cmake, project name and compile options
 ################################################################################
 cmake_minimum_required(VERSION 2.8.3)
-project(bartending_gripper)
+project(bartending_moveit_service)
 
-## Compile as C++11, supported in ROS Kinetic and newer
 add_compile_options(-std=c++11)
 
 ################################################################################
@@ -12,8 +11,16 @@ add_compile_options(-std=c++11)
 ################################################################################
 find_package(catkin REQUIRED COMPONENTS
   roscpp
-  dynamixel_workbench_msgs
-  message_generation
+  std_msgs
+  sensor_msgs
+  geometry_msgs
+  moveit_msgs
+  trajectory_msgs
+  open_manipulator_msgs
+  moveit_core
+  moveit_ros_planning
+  moveit_ros_planning_interface
+  rviz_visual_tools # debug
 )
 
 ################################################################################
@@ -23,44 +30,35 @@ find_package(catkin REQUIRED COMPONENTS
 ################################################################################
 # Declare ROS messages, services and actions
 ################################################################################
-add_service_files(
-  FILES
-  CloseGripper.srv
-)
-
-generate_messages(
-  DEPENDENCIES
-)
 
 ################################################################################
-## Declare ROS dynamic reconfigure parameters
+# Declare ROS dynamic reconfigure parameters
 ################################################################################
 
 ################################################################################
 # Declare catkin specific configuration to be passed to dependent projects
 ################################################################################
 catkin_package(
- INCLUDE_DIRS include
- CATKIN_DEPENDS roscpp dynamixel_workbench_msgs
+  INCLUDE_DIRS include
+  CATKIN_DEPENDS roscpp std_msgs sensor_msgs geometry_msgs moveit_msgs trajectory_msgs open_manipulator_msgs moveit_core moveit_ros_planning moveit_ros_planning_interface
 )
 
 ################################################################################
 # Build
 ################################################################################
-
 include_directories(
   include
   ${catkin_INCLUDE_DIRS}
 )
 
-add_executable(bartending_gripper_node src/bartending_gripper.cpp)
-add_dependencies(bartending_gripper_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-target_link_libraries(bartending_gripper_node ${catkin_LIBRARIES})
+add_executable(moveit_remapper src/bartending_moveit_service.cpp)
+add_dependencies(moveit_remapper ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+target_link_libraries(moveit_remapper ${catkin_LIBRARIES})
 
-#################################################################################
-## Install
-#################################################################################
-install(TARGETS bartending_gripper_node
+################################################################################
+# Install
+################################################################################
+install(TARGETS moveit_remapper
   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 

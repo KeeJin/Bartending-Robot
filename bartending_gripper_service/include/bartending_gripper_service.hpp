@@ -1,5 +1,5 @@
-#ifndef BARTENDING_GRIPPER
-#define BARTENDING_GRIPPER
+#ifndef BARTENDING_GRIPPER_SERVICE
+#define BARTENDING_GRIPPER_SERVICE
 
 #include <ros/ros.h>
 #include "bartending_gripper/CloseGripper.h"
@@ -24,4 +24,4 @@ class BartendingGripper {
   dynamixel_workbench_msgs::DynamixelCommand motor_cmd_;
 };
 
-#endif /* BARTENDING_GRIPPER */
+#endif /* BARTENDING_GRIPPER_SERVICE */

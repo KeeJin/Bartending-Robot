@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <package format="2">
-  <name>bartending_gripper</name>
+  <name>bartending_gripper_service</name>
   <version>0.0.1</version>
-  <description>bartending_gripper</description>
+  <description>bartending_gripper_service</description>
   <license>Apache 2.0</license>
   <author email="yoplocheo@gmail.com">Cheo Kee Jin</author>
   <maintainer email="yoplocheo@gmail.com">Cheo Kee Jin</maintainer>

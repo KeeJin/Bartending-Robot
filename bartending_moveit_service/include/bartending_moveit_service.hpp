@@ -1,5 +1,5 @@
-#ifndef MOVEIT_PLANNER_POST_PROCESSOR
-#define MOVEIT_PLANNER_POST_PROCESSOR
+#ifndef BARTENDING_MOVEIT_SERVICE
+#define BARTENDING_MOVEIT_SERVICE
 
 #include <ros/ros.h>
 
@@ -39,25 +39,25 @@ class MoveitPlannerPostProcessor {
 
   bool PlanPath(const std::string planning_group,
                 open_manipulator_msgs::JointPosition msg);
-  bool PlanPath(const std::string planning_group,
-                open_manipulator_msgs::KinematicsPose msg, bool grasping);
+//   bool PlanPath(const std::string planning_group,
+//                 open_manipulator_msgs::KinematicsPose msg, bool grasping);
   void DisplayPlannedPathMsgCallback(
       const moveit_msgs::DisplayTrajectory::ConstPtr &msg);
   bool setJointPositionMsgCallback(
       open_manipulator_msgs::SetJointPosition::Request &req,
       open_manipulator_msgs::SetJointPosition::Response &res);
 
-  bool setKinematicsPoseMsgCallback(
-      open_manipulator_msgs::SetKinematicsPose::Request &req,
-      open_manipulator_msgs::SetKinematicsPose::Response &res);
+//   bool setKinematicsPoseMsgCallback(
+//       open_manipulator_msgs::SetKinematicsPose::Request &req,
+//       open_manipulator_msgs::SetKinematicsPose::Response &res);
 
   bool getJointPositionMsgCallback(
       open_manipulator_msgs::GetJointPosition::Request &req,
       open_manipulator_msgs::GetJointPosition::Response &res);
 
-  bool getKinematicsPoseMsgCallback(
-      open_manipulator_msgs::GetKinematicsPose::Request &req,
-      open_manipulator_msgs::GetKinematicsPose::Response &res);
+//   bool getKinematicsPoseMsgCallback(
+//       open_manipulator_msgs::GetKinematicsPose::Request &req,
+//       open_manipulator_msgs::GetKinematicsPose::Response &res);
 
  private:
   ros::NodeHandle nh_;
@@ -66,9 +66,9 @@ class MoveitPlannerPostProcessor {
   ros::Publisher dynamixel_workbench_pub_;
   ros::Subscriber display_planned_path_sub_;
   ros::ServiceServer get_joint_position_server_;
-  ros::ServiceServer get_kinematics_pose_server_;
+//   ros::ServiceServer get_kinematics_pose_server_;
   ros::ServiceServer set_joint_position_server_;
-  ros::ServiceServer set_kinematics_pose_server_;
+//   ros::ServiceServer set_kinematics_pose_server_;
   moveit::planning_interface::MoveGroupInterface *move_group_;
   moveit::planning_interface::PlanningSceneInterface planning_scene_interface_;
 
@@ -78,4 +78,4 @@ class MoveitPlannerPostProcessor {
   float angle_offset_[5] = {-0.7, -0.25, 0.0, 0.0, 0.0};
 };
 
-#endif /* MOVEIT_PLANNER_POST_PROCESSOR */
+#endif /* BARTENDING_MOVEIT_SERVICE */
