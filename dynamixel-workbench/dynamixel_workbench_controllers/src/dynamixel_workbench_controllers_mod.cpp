@@ -507,7 +507,7 @@ void DynamixelController::publishCallback(const ros::TimerEvent&)
       
       // add offset
       // ROS_INFO_STREAM("ID: " << dxl.second << std::endl);
-      // ROS_INFO_STREAM("Offset: " << joint_state_offset_[(int)dxl.second] << std::endl);
+      // ROS_INFO_STREAM("Offset: " << joint_state_offset_[(int)dxl.second - 1] << std::endl);
       // ROS_INFO_STREAM("Position before offset: " << position << std::endl);
       position += joint_state_offset_[(int)dxl.second - 1];
       // ROS_INFO_STREAM("Position after offset: " << position << std::endl);
@@ -657,6 +657,7 @@ void DynamixelController::trajectoryMsgCallback(const trajectory_msgs::JointTraj
   uint8_t id_cnt = 0;
   bool result = false;
   WayPoint wp;
+  int index_zero, index_four;
 
   if (is_moving_ == false)
   {
@@ -668,12 +669,20 @@ void DynamixelController::trajectoryMsgCallback(const trajectory_msgs::JointTraj
     if (result == false)
       ROS_ERROR("Failed to get Present Position");
 
+    int i = 0;
     for (auto const& joint:msg->joint_names)
     {
+      if (joint == "gripper_z_rot") {
+        index_zero = i;
+      } else if (joint == "elbow_y_rot") {
+        index_four = i;
+      }
+
       ROS_INFO("'%s' is ready to move", joint.c_str());
 
       jnt_tra_msg_->joint_names.push_back(joint);
       id_cnt++;
+      i++;
     }
 
     if (id_cnt != 0)
@@ -701,6 +710,11 @@ void DynamixelController::trajectoryMsgCallback(const trajectory_msgs::JointTraj
 
           for (uint8_t id_num = 0; id_num < id_cnt; id_num++)
           {
+            if (id_num == index_zero) {
+              goal[id_num].position -= joint_state_offset_[0];
+            } else if (id_num == index_four) {
+              goal[id_num].position -= joint_state_offset_[4];
+            }
             jnt_tra_point_msg.positions.push_back(goal[id_num].position);
             jnt_tra_point_msg.velocities.push_back(goal[id_num].velocity);
             jnt_tra_point_msg.accelerations.push_back(goal[id_num].acceleration);

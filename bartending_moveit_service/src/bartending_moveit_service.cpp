@@ -215,6 +215,13 @@ bool MoveitPlannerPostProcessor::PlanPath(
   for (uint8_t index = 0; index < joint_num; index++) {
     joint_group_positions[index] = msg.position[index];
   }
+  // joint_group_positions[0] = msg.position[0];
+  // joint_group_positions[0] = 0.0;
+  // joint_group_positions[1] = 0.0;
+  // joint_group_positions[2] = 0.0;
+  // joint_group_positions[3] = 0.0;
+  // joint_group_positions[4] = 0.0;
+
   move_group_->setJointValueTarget(joint_group_positions);
   move_group_->setMaxVelocityScalingFactor(msg.max_velocity_scaling_factor);
   move_group_->setMaxAccelerationScalingFactor(

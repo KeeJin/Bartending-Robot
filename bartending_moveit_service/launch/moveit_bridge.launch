@@ -2,7 +2,7 @@
   <arg name="robot_name"       default="bartender"/>
   <arg name="planning_group"   default="bartender_arm"/>
 
-  <node name="$(arg planning_group)" pkg="dynamixel_workbench_moveit_remapper" type="moveit_remapper" output="screen">
+  <node name="$(arg planning_group)" pkg="bartending_moveit_service" type="moveit_remapper" output="screen">
     <param name="planning_group"      value="$(arg planning_group)"/>
     <remap from="$(arg planning_group)/joint_trajectory" to="$(arg robot_name)/joint_trajectory"/>
   </node>

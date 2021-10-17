@@ -1,7 +1,7 @@
 moveit_setup_assistant_config:
   URDF:
     package: ""
-    relative_path: /home/keeejinnn/catkin_ws/src/Bartending-Robot/bartending_robot_description/urdf/bartending_robot_arm.urdf
+    relative_path: /home/common/catkin_ws/src/Bartending-Robot/bartending_robot_description/urdf/bartending_robot_arm.urdf
     xacro_args: ""
   SRDF:
     relative_path: config/bartending_robot_arm.srdf
