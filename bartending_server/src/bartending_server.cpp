@@ -257,30 +257,32 @@ bool BartendingServer::ServeCocktail() {
 }
 
 bool BartendingServer::Grasp(int motor_position) {
-  // bartending_gripper_service::CloseGripper msg;
-  // msg.request.motor_position = 300;
-  // if (client_gripper_close_.call(msg)) {
-  //   if (msg.response.success) {
-  //     ROS_INFO("Gripper closed successfully.");
-  //     return true;
-  //   }
-  // }
-  // ROS_INFO("Gripper failed to close.");
-  // return false;
-  return true;
+  bartending_gripper_service::CloseGripper msg;
+  msg.request.motor_position = 300;
+  if (client_gripper_close_.call(msg)) {
+    if (msg.response.success) {
+      ROS_INFO("Gripper closed successfully.");
+      sleep(5);
+      return true;
+    }
+  }
+  ROS_INFO("Gripper failed to close.");
+  return false;
+  // return true;
 }
 
 bool BartendingServer::OpenGripper() {
-  // std_srvs::Trigger msg;
-  // if (client_gripper_open_.call(msg)) {
-  //   if (msg.response.success) {
-  //     ROS_INFO("Gripper opened successfully.");
-  //     return true;
-  //   }
-  // }
-  // ROS_INFO("Gripper failed to open.");
-  // return false;
-  return true;
+  std_srvs::Trigger msg;
+  if (client_gripper_open_.call(msg)) {
+    if (msg.response.success) {
+      ROS_INFO("Gripper opened successfully.");
+      sleep(5);
+      return true;
+    }
+  }
+  ROS_INFO("Gripper failed to open.");
+  return false;
+  // return true;
 }
 
 bool BartendingServer::MoveTo(std::string goal, bool keep_level) {
@@ -307,7 +309,7 @@ bool BartendingServer::MoveTo(std::string goal, bool keep_level) {
     }
     if (msg.response.is_planned) {
       ROS_INFO_STREAM("Path plan success for " << goal);
-      sleep(3);
+      sleep(5);
     } else {
       ROS_INFO_STREAM("Planning failed for " << goal);
       return false;
@@ -316,13 +318,13 @@ bool BartendingServer::MoveTo(std::string goal, bool keep_level) {
   return true;
 }
 bool BartendingServer::Pour(int microseconds) {
-  // dynamixel_workbench_msgs::DynamixelCommand motor_cmd;
-  // motor_cmd.request.value = 300;
-  // client_motor_control_.call(motor_cmd);
-  // usleep(microseconds);
-  // motor_cmd.request.value = 750;
-  // client_motor_control_.call(motor_cmd);
-  // sleep(3);
+  dynamixel_workbench_msgs::DynamixelCommand motor_cmd;
+  motor_cmd.request.value = 300;
+  client_motor_control_.call(motor_cmd);
+  usleep(microseconds);
+  motor_cmd.request.value = 750;
+  client_motor_control_.call(motor_cmd);
+  sleep(5);
   return true;
 }
 

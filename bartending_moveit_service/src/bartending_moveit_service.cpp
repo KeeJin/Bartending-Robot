@@ -231,32 +231,33 @@ bool MoveitPlannerPostProcessor::PlanPath(
   std::vector<double> joint_group_positions;
   current_state->copyJointGroupPositions(joint_model_group,
                                          joint_group_positions);
-  uint8_t joint_num = msg.position.size();
-  for (uint8_t index = 0; index < joint_num; index++) {
-    joint_group_positions[index] = msg.position[index];
-  }
+  // uint8_t joint_num = msg.position.size();
+  // for (uint8_t index = 0; index < joint_num; index++) {
+  //   joint_group_positions[index] = msg.position[index];
+  // }
+  joint_group_positions[0] = msg.position[0];
 
   // Apply constraints if needed
-  if (msg.joint_name.size() == 1) {
-    ROS_INFO("Planning with end-effector constraint.\n");
-    moveit_msgs::Constraints constraints;
-    constraints.name = "Level gripper";
-    moveit_msgs::OrientationConstraint orient_constraint;
-    orient_constraint.header.frame_id = "base_platform";
-    orient_constraint.link_name = "gripper_link";
-    orient_constraint.orientation.x = 0.0;
-    orient_constraint.orientation.y = 0.7071068;
-    orient_constraint.orientation.z = 0.0;
-    orient_constraint.orientation.w = 0.7071068;
-    orient_constraint.absolute_x_axis_tolerance = 0.1;
-    orient_constraint.absolute_y_axis_tolerance = 0.1;
-    orient_constraint.absolute_z_axis_tolerance = 3.14;
-    orient_constraint.weight = 1.0;
-    constraints.orientation_constraints.push_back(orient_constraint);
-    move_group_->setPathConstraints(constraints);
-  } else {
-    ROS_INFO("Planning without any end-effector constraint.\n");
-  }
+  // if (msg.joint_name.size() == 1) {
+  //   ROS_INFO("Planning with end-effector constraint.\n");
+  //   moveit_msgs::Constraints constraints;
+  //   constraints.name = "Level gripper";
+  //   moveit_msgs::OrientationConstraint orient_constraint;
+  //   orient_constraint.header.frame_id = "base_platform";
+  //   orient_constraint.link_name = "gripper_link";
+  //   orient_constraint.orientation.x = 0.0;
+  //   orient_constraint.orientation.y = 0.7071068;
+  //   orient_constraint.orientation.z = 0.0;
+  //   orient_constraint.orientation.w = 0.7071068;
+  //   orient_constraint.absolute_x_axis_tolerance = 0.1;
+  //   orient_constraint.absolute_y_axis_tolerance = 0.1;
+  //   orient_constraint.absolute_z_axis_tolerance = 3.14;
+  //   orient_constraint.weight = 1.0;
+  //   constraints.orientation_constraints.push_back(orient_constraint);
+  //   move_group_->setPathConstraints(constraints);
+  // } else {
+  //   ROS_INFO("Planning without any end-effector constraint.\n");
+  // }
 
   move_group_->setJointValueTarget(joint_group_positions);
   move_group_->setMaxVelocityScalingFactor(msg.max_velocity_scaling_factor);

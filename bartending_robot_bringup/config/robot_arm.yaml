@@ -1,12 +1,12 @@
-gripper_actuator:
-  ID: 6
-  Return_Delay_Time: 0
-  CW_Angle_Limit: 232
-  CCW_Angle_Limit: 650
-  CW_Compliance_Slope: 254
-  CCW_Compliance_Slope: 254
-  Moving_Speed: 80
-  Goal_Position: 650
+# gripper_actuator:
+#   ID: 6
+#   Return_Delay_Time: 0
+#   CW_Angle_Limit: 232
+#   CCW_Angle_Limit: 650
+#   CW_Compliance_Slope: 254
+#   CCW_Compliance_Slope: 254
+#   Moving_Speed: 80
+#   Goal_Position: 650
 
 gripper_z_rot:
   ID: 1
