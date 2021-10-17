@@ -7,10 +7,13 @@
 #include <moveit_msgs/CollisionObject.h>
 #include <moveit_msgs/OrientationConstraint.h>
 #include <moveit_msgs/Constraints.h>
+#include <tf2/LinearMath/Quaternion.h>
+#include <tf2_geometry_msgs/tf2_geometry_msgs.h>
+#include <unistd.h>
 
 // debug
 #include <rviz_visual_tools/rviz_visual_tools.h>
-#include <unistd.h>
+
 
 MoveitPlannerPostProcessor::MoveitPlannerPostProcessor()
     : nh_(""), priv_nh_("~") {
@@ -74,7 +77,7 @@ void MoveitPlannerPostProcessor::Initialise() {
   collision_object.operation = collision_object.ADD;
 
   std::vector<moveit_msgs::CollisionObject> collision_objects;
-  // collision_objects.push_back(collision_object);
+  collision_objects.push_back(collision_object);
 
   ROS_INFO_NAMED("bartender_robot", "Added table base into the world");
   planning_scene_interface_.addCollisionObjects(collision_objects);
@@ -243,19 +246,21 @@ bool MoveitPlannerPostProcessor::PlanPath(
   // joint_group_positions[4] = 0.0;
 
   // Apply constraints if needed
-  if (msg.joint_name == "grasp") {
+  if (msg.joint_name.size() == 1) {
     ROS_INFO("Planning with end-effector constraint.\n");
     moveit_msgs::Constraints constraints;
     constraints.name = "Level gripper";
     moveit_msgs::OrientationConstraint orient_constraint;
     orient_constraint.header.frame_id = "base_platform";
     orient_constraint.link_name = "gripper_link";
-    orient_constraint.orientation.x = 0.0;
-    orient_constraint.orientation.y = 0.7071068;
-    orient_constraint.orientation.z = 0.0;
-    orient_constraint.orientation.w = 0.7071068;
-    orient_constraint.absolute_x_axis_tolerance = 0.1;
-    orient_constraint.absolute_y_axis_tolerance = 0.1;
+    tf2::Quaternion quart;
+    quart.setRPY(0, M_PI_2, msg.position[0] * -1);
+    ROS_INFO_STREAM("Quarternion: " << quart);
+    geometry_msgs::Quaternion orientation;
+    orientation = tf2::toMsg(quart);
+    orient_constraint.orientation = orientation;
+    orient_constraint.absolute_x_axis_tolerance = 0.8;
+    orient_constraint.absolute_y_axis_tolerance = 0.8;
     orient_constraint.absolute_z_axis_tolerance = 3.14;
     orient_constraint.weight = 1.0;
     constraints.orientation_constraints.push_back(orient_constraint);

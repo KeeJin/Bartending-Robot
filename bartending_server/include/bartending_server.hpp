@@ -10,6 +10,7 @@ class BartendingServer {
     MIN = -90, 
     MAX = 90, 
     MIDDLE = 0, 
+    POUR = -10,
     ALCOHOL1 = 30,
     ALCOHOL2 = 60,
     MIXER1 = -80, 
@@ -49,7 +50,7 @@ class BartendingServer {
   bool ServeCocktail();
   bool Grasp(int motor_position);
   bool OpenGripper();
-  bool MoveTo(std::string goal, bool keep_level = false);
+  bool MoveTo(std::string goal, int delay, bool keep_level = false);
   bool Pour(int microseconds);
 
 
@@ -63,14 +64,14 @@ class BartendingServer {
   CustomerRequest current_request_;
   std::unordered_map<std::string, std::vector<double>> joint_states_;
   const Position shaker_position_ = {Section::MIDDLE, 0.03, 0.08};
-  const Position pouring_position_ = {Section::ALCOHOL1, 0.03, 0.06};
+  const Position pouring_position_ = {Section::POUR, 0.01, 0.07};
   const Position shaker_cap_position_ = {Section::MIDDLE, 0.02, 0.08};
-  const Position jager_position_ = {Section::ALCOHOL1, 0.06, 0.02};
+  const Position jager_position_ = {Section::ALCOHOL1, 0.05, 0.02};
   const Position vodka_position_ = {Section::ALCOHOL2, 0.03, 0.08};
-  const Position redbull_position_ = {Section::MIXER1, 0.03, 0.08};
+  const Position redbull_position_ = {Section::MIXER1, 0.05, 0.02};
   const Position sprite_position_ = {Section::MIXER2, 0.03, 0.08};
   const Position water_position_ = {Section::MIXER3, 0.06, 0.02};
-  const float offset_ = 0.01;
+  const float offset_ = 0.02;
 };
 
 #endif /* BARTENDING_SERVER */

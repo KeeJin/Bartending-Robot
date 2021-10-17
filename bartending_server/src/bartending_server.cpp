@@ -22,21 +22,21 @@ void BartendingServer::Initialise() {
           "/bartender/dynamixel_command");
 
   // Calculate IK for all objects once
-  GenerateIKSolution("shaker", shaker_position_);
+  // GenerateIKSolution("shaker", shaker_position_);
   GenerateIKSolution("pour", pouring_position_);
-  GenerateIKSolution("shaker_cap", shaker_cap_position_);
+  // GenerateIKSolution("shaker_cap", shaker_cap_position_);
   GenerateIKSolution("jager", jager_position_);
-  GenerateIKSolution("vodka", vodka_position_);
+  // GenerateIKSolution("vodka", vodka_position_);
   GenerateIKSolution("redbull", redbull_position_);
-  GenerateIKSolution("sprite", sprite_position_);
-  GenerateIKSolution("water", water_position_);
-  GenerateIKSolution("shaker_offset", shaker_position_, offset_);
-  GenerateIKSolution("shaker_cap_offset", shaker_cap_position_, offset_);
+  // GenerateIKSolution("sprite", sprite_position_);
+  // GenerateIKSolution("water", water_position_);
+  // GenerateIKSolution("shaker_offset", shaker_position_, offset_);
+  // GenerateIKSolution("shaker_cap_offset", shaker_cap_position_, offset_);
   GenerateIKSolution("jager_offset", jager_position_, offset_);
-  GenerateIKSolution("vodka_offset", vodka_position_, offset_);
+  // GenerateIKSolution("vodka_offset", vodka_position_, offset_);
   GenerateIKSolution("redbull_offset", redbull_position_, offset_);
-  GenerateIKSolution("sprite_offset", sprite_position_, offset_);
-  GenerateIKSolution("water_offset", water_position_, offset_);
+  // GenerateIKSolution("sprite_offset", sprite_position_, offset_);
+  // GenerateIKSolution("water_offset", water_position_, offset_);
 }
 
 void BartendingServer::GenerateIKSolution(std::string object, Position position,
@@ -44,8 +44,8 @@ void BartendingServer::GenerateIKSolution(std::string object, Position position,
   ROS_INFO_STREAM("Generating IK solutions for: " << object);
 
   std::vector<double> joint_states;
-  double l2 = 0.034;
-  double l3 = 0.034;
+  double l2 = 0.068;
+  double l3 = 0.068;
   double a1, a2, a3, a4, a5;
   double b1, b2;
   double distance = position.distance - offset;
@@ -76,13 +76,13 @@ void BartendingServer::GenerateIKSolution(std::string object, Position position,
   joint_states.push_back(a3);
 
   // Solve for a4
-  a4 = (a2 + a3) - M_PI_2;
+  a4 = M_PI_2 - (a2 + a3);
   joint_states.push_back(a4);
   ROS_INFO_STREAM("Calculated angle 4: " << a4);
 
   a5 = 0.0;
   joint_states.push_back(a5);
-  ROS_INFO_STREAM("Calculated angle 5: " << a5);
+  ROS_INFO_STREAM("Calculated angle 5: " << a5 << "\n---------------");
 
   // Insert into unordered_map
   joint_states_.insert(std::make_pair(object, joint_states));
@@ -113,16 +113,10 @@ bool BartendingServer::InterpretRequest(int8_t alcohol, int8_t mixer) {
 }
 
 bool BartendingServer::PrepareCocktail() {
-  if (PourAlcohol()) {
-    if (PourMixer()) {
-      if (CoverShaker()) {
-        if (Shake()) {
-          if (ServeCocktail()) {
-            return true;
-          }
-        }
-      }
-    }
+  if (PourAlcohol() && PourMixer() && CoverShaker() && Shake() &&
+      ServeCocktail()) {
+    ROS_INFO("Cocktail is ready.");
+    return true;
   }
   return false;
 }
@@ -146,13 +140,13 @@ bool BartendingServer::PourAlcohol() {
 
   // Move arm to offset position
   ROS_INFO("Moving to offset");
-  if (!MoveTo(search_offset)) {
+  if (!MoveTo(search_offset, 9)) {
     return false;
   }
 
   // Move arm to alcohol position poised to grip
   ROS_INFO("Moving to alcohol position");
-  if (!MoveTo(search_approach)) {
+  if (!MoveTo(search_approach, 5)) {
     return false;
   }
 
@@ -163,15 +157,15 @@ bool BartendingServer::PourAlcohol() {
   }
 
   // Move arm to pouring position
-  if (!MoveTo("pour")) {
+  if (!MoveTo("pour", 7)) {
     return false;
   }
 
   // Pour alcohol
-  Pour(500);
+  Pour(1000);
 
   // Move arm to alcohol position poised to grip
-  if (!MoveTo(search_approach, true)) {
+  if (!MoveTo(search_approach, 9, true)) {
     return false;
   }
 
@@ -179,7 +173,7 @@ bool BartendingServer::PourAlcohol() {
   OpenGripper();
 
   // Move arm to offset position
-  if (!MoveTo(search_offset)) {
+  if (!MoveTo(search_offset, 5)) {
     return false;
   }
   return true;
@@ -206,12 +200,12 @@ bool BartendingServer::PourMixer() {
   }
 
   // Move arm to offset position
-  if (!MoveTo(search_offset)) {
+  if (!MoveTo(search_offset, 9)) {
     return false;
   }
 
   // Move arm to mixer position poised to grip
-  if (!MoveTo(search_approach, true)) {
+  if (!MoveTo(search_approach, 5, true)) {
     return false;
   }
 
@@ -221,15 +215,15 @@ bool BartendingServer::PourMixer() {
   }
 
   // Move arm to pouring position
-  if (!MoveTo("pour", true)) {
+  if (!MoveTo("pour", 7, true)) {
     return false;
   }
 
   // Pour mixer
-  Pour(500);
+  Pour(1000);
 
-  // Move arm to mixer position poised to grip
-  if (!MoveTo(search_approach, true)) {
+  // Move arm to mixer position poised to release
+  if (!MoveTo(search_approach, 9, true)) {
     return false;
   }
 
@@ -237,7 +231,7 @@ bool BartendingServer::PourMixer() {
   OpenGripper();
 
   // Move arm to offset position
-  if (!MoveTo(search_offset)) {
+  if (!MoveTo(search_offset, 5)) {
     return false;
   }
   return true;
@@ -285,7 +279,7 @@ bool BartendingServer::OpenGripper() {
   // return true;
 }
 
-bool BartendingServer::MoveTo(std::string goal, bool keep_level) {
+bool BartendingServer::MoveTo(std::string goal, int delay, bool keep_level) {
   open_manipulator_msgs::SetJointPosition msg;
   msg.request.planning_group = "bartender_arm";
   auto it = joint_states_.find(goal);
@@ -301,7 +295,7 @@ bool BartendingServer::MoveTo(std::string goal, bool keep_level) {
     msg.request.joint_position.position = it->second;
     if (keep_level) {
       // std::vector<std::string> grasp = {"grasp"}
-      msg.request.joint_position.joint_name = {"grasp"};
+      // msg.request.joint_position.joint_name = {"grasp"};
     }
     if (!client_move_arm_.call(msg)) {
       ROS_ERROR("Error calling service.");
@@ -309,7 +303,7 @@ bool BartendingServer::MoveTo(std::string goal, bool keep_level) {
     }
     if (msg.response.is_planned) {
       ROS_INFO_STREAM("Path plan success for " << goal);
-      sleep(5);
+      sleep(delay);
     } else {
       ROS_INFO_STREAM("Planning failed for " << goal);
       return false;
@@ -319,11 +313,16 @@ bool BartendingServer::MoveTo(std::string goal, bool keep_level) {
 }
 bool BartendingServer::Pour(int microseconds) {
   dynamixel_workbench_msgs::DynamixelCommand motor_cmd;
+  motor_cmd.request.id = 1;
+  motor_cmd.request.addr_name = "Goal_Position";
   motor_cmd.request.value = 300;
-  client_motor_control_.call(motor_cmd);
-  usleep(microseconds);
+  while (!client_motor_control_.call(motor_cmd))
+    ;
+  // usleep(microseconds);
+  sleep(1);
   motor_cmd.request.value = 750;
-  client_motor_control_.call(motor_cmd);
+  while (!client_motor_control_.call(motor_cmd))
+    ;
   sleep(5);
   return true;
 }
