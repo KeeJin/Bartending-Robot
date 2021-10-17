@@ -41,25 +41,40 @@ void MoveitPlannerPostProcessor::Initialise() {
   moveit_msgs::CollisionObject collision_object;
   collision_object.header.frame_id = move_group_->getPlanningFrame();
   collision_object.id = "table_boundary";
-  shape_msgs::SolidPrimitive primitive;
-  primitive.type = primitive.BOX;
-  primitive.dimensions.resize(3);
-  primitive.dimensions[0] = 0.4;
-  primitive.dimensions[1] = 0.4;
-  primitive.dimensions[2] = 0.1;
+  shape_msgs::SolidPrimitive platform;
+  platform.type = platform.BOX;
+  platform.dimensions.resize(3);
+  platform.dimensions[0] = 1.5;
+  platform.dimensions[1] = 1.5;
+  platform.dimensions[2] = 0.05;
 
   geometry_msgs::Pose box_pose;
   box_pose.orientation.w = 1.0;
   box_pose.position.x = 0.0;
   box_pose.position.y = 0.0;
-  box_pose.position.z = -0.05;
+  box_pose.position.z = 0.0;
 
-  collision_object.primitives.push_back(primitive);
+  collision_object.primitives.push_back(platform);
   collision_object.primitive_poses.push_back(box_pose);
+
+  // shape_msgs::SolidPrimitive bottle;
+  // bottle.type = bottle.CYLINDER;
+  // bottle.dimensions.resize(2);
+  // bottle.dimensions[0] = 0.09;
+  // bottle.dimensions[1] = 0.12;
+
+  // geometry_msgs::Pose bottle_pose;
+  // bottle_pose.orientation.w = 1.0;
+  // bottle_pose.position.x = 0.05;
+  // bottle_pose.position.y = 0.0;
+  // bottle_pose.position.z = 0.05;
+
+  // collision_object.primitives.push_back(bottle);
+  // collision_object.primitive_poses.push_back(box_pose);
   collision_object.operation = collision_object.ADD;
 
   std::vector<moveit_msgs::CollisionObject> collision_objects;
-  collision_objects.push_back(collision_object);
+  // collision_objects.push_back(collision_object);
 
   ROS_INFO_NAMED("bartender_robot", "Added table base into the world");
   planning_scene_interface_.addCollisionObjects(collision_objects);
@@ -123,6 +138,11 @@ bool MoveitPlannerPostProcessor::setJointPositionMsgCallback(
     open_manipulator_msgs::SetJointPosition::Request &req,
     open_manipulator_msgs::SetJointPosition::Response &res) {
   open_manipulator_msgs::JointPosition msg = req.joint_position;
+  for (auto position : msg.position) {
+    std::cout << position / M_PI * 180.0 << "--";
+  }
+  std::cout << std::endl;
+  std::cout << "Planning group: " << req.planning_group << std::endl;
   res.is_planned = PlanPath(req.planning_group, msg);
 
   return true;
@@ -221,6 +241,28 @@ bool MoveitPlannerPostProcessor::PlanPath(
   // joint_group_positions[2] = 0.0;
   // joint_group_positions[3] = 0.0;
   // joint_group_positions[4] = 0.0;
+
+  // Apply constraints if needed
+  if (msg.joint_name.size() == 1) {
+    ROS_INFO("Planning with end-effector constraint.\n");
+    moveit_msgs::Constraints constraints;
+    constraints.name = "Level gripper";
+    moveit_msgs::OrientationConstraint orient_constraint;
+    orient_constraint.header.frame_id = "base_platform";
+    orient_constraint.link_name = "gripper_link";
+    orient_constraint.orientation.x = 0.0;
+    orient_constraint.orientation.y = 0.7071068;
+    orient_constraint.orientation.z = 0.0;
+    orient_constraint.orientation.w = 0.7071068;
+    orient_constraint.absolute_x_axis_tolerance = 0.1;
+    orient_constraint.absolute_y_axis_tolerance = 0.1;
+    orient_constraint.absolute_z_axis_tolerance = 3.14;
+    orient_constraint.weight = 1.0;
+    constraints.orientation_constraints.push_back(orient_constraint);
+    move_group_->setPathConstraints(constraints);
+  } else {
+    ROS_INFO("Planning without any end-effector constraint.\n");
+  }
 
   move_group_->setJointValueTarget(joint_group_positions);
   move_group_->setMaxVelocityScalingFactor(msg.max_velocity_scaling_factor);

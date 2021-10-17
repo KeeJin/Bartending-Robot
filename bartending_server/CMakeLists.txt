@@ -14,6 +14,7 @@ find_package(catkin REQUIRED COMPONENTS
   roscpp
   bartending_gripper_service
   open_manipulator_msgs
+  dynamixel_workbench_msgs
   message_generation
 )
 
