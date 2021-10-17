@@ -243,7 +243,7 @@ bool MoveitPlannerPostProcessor::PlanPath(
   // joint_group_positions[4] = 0.0;
 
   // Apply constraints if needed
-  if (msg.joint_name.size() == 1) {
+  if (msg.joint_name == "grasp") {
     ROS_INFO("Planning with end-effector constraint.\n");
     moveit_msgs::Constraints constraints;
     constraints.name = "Level gripper";
