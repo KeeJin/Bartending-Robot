@@ -211,10 +211,11 @@ bool MoveitPlannerPostProcessor::PlanPath(
   std::vector<double> joint_group_positions;
   current_state->copyJointGroupPositions(joint_model_group,
                                          joint_group_positions);
-  uint8_t joint_num = msg.position.size();
-  for (uint8_t index = 0; index < joint_num; index++) {
-    joint_group_positions[index] = msg.position[index];
-  }
+  // uint8_t joint_num = msg.position.size();
+  // for (uint8_t index = 0; index < joint_num; index++) {
+  //   joint_group_positions[index] = msg.position[index];
+  // }
+  joint_group_positions[2] = msg.position[0];
   move_group_->setJointValueTarget(joint_group_positions);
   move_group_->setMaxVelocityScalingFactor(msg.max_velocity_scaling_factor);
   move_group_->setMaxAccelerationScalingFactor(

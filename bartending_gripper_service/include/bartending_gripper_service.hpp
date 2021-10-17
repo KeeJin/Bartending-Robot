@@ -2,7 +2,7 @@
 #define BARTENDING_GRIPPER_SERVICE
 
 #include <ros/ros.h>
-#include "bartending_gripper/CloseGripper.h"
+#include "bartending_gripper_service/CloseGripper.h"
 #include <std_srvs/Trigger.h>
 #include <dynamixel_workbench_msgs/DynamixelCommand.h>
 
@@ -14,7 +14,8 @@ class BartendingGripper {
  private:
   void Initialise();
   bool Open(std_srvs::Trigger::Request& req, std_srvs::Trigger::Response& res);
-  bool Close(bartending_gripper::CloseGripper::Request& req, bartending_gripper::CloseGripper::Response& res);
+  bool Close(bartending_gripper_service::CloseGripper::Request& req,
+             bartending_gripper_service::CloseGripper::Response& res);
 
  private:
   ros::NodeHandle nh_;

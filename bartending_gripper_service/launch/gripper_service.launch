@@ -1,0 +1,3 @@
+<launch>
+    <node name="bartending_gripper_service" pkg="bartending_gripper_service" type="bartending_gripper_service_node" output="screen"></node>
+</launch>

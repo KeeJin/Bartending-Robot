@@ -506,11 +506,11 @@ void DynamixelController::publishCallback(const ros::TimerEvent&)
       position = dxl_wb_->convertValue2Radian((uint8_t)dxl.second, (int32_t)dynamixel_state_list_.dynamixel_state[id_cnt].present_position);
       
       // add offset
-      // ROS_INFO_STREAM("ID: " << dxl.second << std::endl);
-      // ROS_INFO_STREAM("Offset: " << joint_state_offset_[(int)dxl.second] << std::endl);
-      // ROS_INFO_STREAM("Position before offset: " << position << std::endl);
+      ROS_INFO_STREAM("ID: " << dxl.second << std::endl);
+      ROS_INFO_STREAM("Offset: " << joint_state_offset_[(int)dxl.second] << std::endl);
+      ROS_INFO_STREAM("Position before offset: " << position << std::endl);
       position += joint_state_offset_[(int)dxl.second - 1];
-      // ROS_INFO_STREAM("Position after offset: " << position << std::endl);
+      ROS_INFO_STREAM("Position after offset: " << position << std::endl);
 
       joint_state_msg_.effort.push_back(effort);
       joint_state_msg_.velocity.push_back(velocity);
@@ -732,6 +732,7 @@ void DynamixelController::trajectoryMsgCallback(const trajectory_msgs::JointTraj
 
             for (uint8_t id_num = 0; id_num < id_cnt; id_num++)
             {
+              if (id_num == )
               jnt_tra_point_msg.positions.push_back(way_point[id_num].position);
               jnt_tra_point_msg.velocities.push_back(way_point[id_num].velocity);
               jnt_tra_point_msg.accelerations.push_back(way_point[id_num].acceleration);
