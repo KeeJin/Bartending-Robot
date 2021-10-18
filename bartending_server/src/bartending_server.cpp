@@ -44,8 +44,8 @@ void BartendingServer::GenerateIKSolution(std::string object, Position position,
   ROS_INFO_STREAM("Generating IK solutions for: " << object);
 
   std::vector<double> joint_states;
-  double l2 = 0.068;
-  double l3 = 0.068;
+  double l2 = 0.0675;
+  double l3 = 0.0675;
   double a1, a2, a3, a4, a5;
   double b1, b2;
   double distance = position.distance - offset;
@@ -66,9 +66,9 @@ void BartendingServer::GenerateIKSolution(std::string object, Position position,
   printf("%.3f\n", acos((squared_sum - l2 * l2 - l3 * l3) / (2 * l2 * l3)));
 
   // Solve for a2
-  b1 = M_PI_2 - atan2(position.height, distance);
-  b2 = atan2(l3 * sin(a3), l2 + l3 * cos(a3));
-  a2 = b1 - b2;
+  b1 = atan2(position.height, distance);
+  b2 = atan2(l3 * sin(a3), l2 + (l3 * cos(a3)));
+  a2 = M_PI_2 - (b1 - b2);
 
   ROS_INFO_STREAM("Calculated angle 2: " << a2);
   ROS_INFO_STREAM("Calculated angle 3: " << a3);
