@@ -63,6 +63,7 @@ class MoveitPlannerPostProcessor {
   ros::NodeHandle nh_;
   ros::NodeHandle priv_nh_;
   std::string planning_group_;
+  bool fake_execution_ = false;
   ros::Publisher dynamixel_workbench_pub_;
   ros::Subscriber display_planned_path_sub_;
   ros::ServiceServer get_joint_position_server_;

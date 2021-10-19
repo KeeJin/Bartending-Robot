@@ -14,7 +14,6 @@
 // debug
 #include <rviz_visual_tools/rviz_visual_tools.h>
 
-
 MoveitPlannerPostProcessor::MoveitPlannerPostProcessor()
     : nh_(""), priv_nh_("~") {
   // Init parameter
@@ -22,6 +21,7 @@ MoveitPlannerPostProcessor::MoveitPlannerPostProcessor()
       priv_nh_.param<std::string>("planning_group", "manipulator");
   move_group_ =
       new moveit::planning_interface::MoveGroupInterface(planning_group_);
+  fake_execution_ = priv_nh_.param<bool>("enable_fake_execution", false);
   Initialise();
 }
 
@@ -42,23 +42,78 @@ void MoveitPlannerPostProcessor::Initialise() {
 
   // Create base collision object
   moveit_msgs::CollisionObject collision_object;
+  ROS_INFO_STREAM("move_group_->getPlanningFrame(): " << move_group_->getPlanningFrame().c_str());
   collision_object.header.frame_id = move_group_->getPlanningFrame();
   collision_object.id = "table_boundary";
   shape_msgs::SolidPrimitive platform;
   platform.type = platform.BOX;
   platform.dimensions.resize(3);
-  platform.dimensions[0] = 1.5;
-  platform.dimensions[1] = 1.5;
+
+  // middle platform
+  platform.dimensions[0] = 0.5;
+  platform.dimensions[1] = 0.2;
   platform.dimensions[2] = 0.05;
 
   geometry_msgs::Pose box_pose;
   box_pose.orientation.w = 1.0;
-  box_pose.position.x = 0.0;
+  box_pose.position.x = 0.35;
   box_pose.position.y = 0.0;
-  box_pose.position.z = 0.0;
+  box_pose.position.z = 0.03;
 
   collision_object.primitives.push_back(platform);
   collision_object.primitive_poses.push_back(box_pose);
+
+  // left platform
+  platform.dimensions[0] = 1.0;
+  platform.dimensions[1] = 0.4;
+  platform.dimensions[2] = 0.05;
+
+  box_pose.position.x = 0.1;
+  box_pose.position.y = 0.25;
+  box_pose.position.z = 0.03;
+
+  collision_object.primitives.push_back(platform);
+  collision_object.primitive_poses.push_back(box_pose);
+
+  // right platform
+  box_pose.position.x = 0.1;
+  box_pose.position.y = -0.25;
+  box_pose.position.z = 0.03;
+
+  collision_object.primitives.push_back(platform);
+  collision_object.primitive_poses.push_back(box_pose);
+
+  // left divider
+  shape_msgs::SolidPrimitive divider;
+  divider.type = platform.BOX;
+  divider.dimensions.resize(3);
+  divider.dimensions[0] = 0.09;
+  divider.dimensions[1] = 0.01;
+  divider.dimensions[2] = 0.08;
+
+  geometry_msgs::Pose divider_pose;
+  tf2::Quaternion quart;
+  quart.setRPY(0, 0, M_PI / 9);
+  geometry_msgs::Quaternion orientation;
+  divider_pose.orientation = tf2::toMsg(quart);
+  // divider1_pose.orientation.w = 1.0;
+  divider_pose.position.x = 0.24;
+  divider_pose.position.y = 0.1;
+  divider_pose.position.z = 0.095;
+
+  collision_object.primitives.push_back(divider);
+  collision_object.primitive_poses.push_back(divider_pose);
+
+  // right divider
+  quart.setRPY(0, 0, -M_PI / 9);
+  divider_pose.orientation = tf2::toMsg(quart);
+  // divider1_pose.orientation.w = 1.0;
+  divider_pose.position.x = 0.24;
+  divider_pose.position.y = -0.1;
+  divider_pose.position.z = 0.095;
+
+  collision_object.primitives.push_back(divider);
+  collision_object.primitive_poses.push_back(divider_pose);
 
   // shape_msgs::SolidPrimitive bottle;
   // bottle.type = bottle.CYLINDER;
@@ -167,8 +222,8 @@ bool MoveitPlannerPostProcessor::setJointPositionMsgCallback(
 // }
 
 // bool MoveitPlannerPostProcessor::PlanPath(
-//     const std::string planning_group, open_manipulator_msgs::KinematicsPose msg,
-//     bool grasping) {
+//     const std::string planning_group, open_manipulator_msgs::KinematicsPose
+//     msg, bool grasping) {
 //   ros::AsyncSpinner spinner(1);
 //   spinner.start();
 //   bool is_planned = false;
@@ -176,7 +231,8 @@ bool MoveitPlannerPostProcessor::setJointPositionMsgCallback(
 
 //   // rviz_visual_tools::RvizVisualToolsPtr visual_tools_;
 //   //   visual_tools_.reset(
-//   //       new rviz_visual_tools::RvizVisualTools("base_platform", "/debug"));
+//   //       new rviz_visual_tools::RvizVisualTools("base_platform",
+//   "/debug"));
 
 //   //   visual_tools_->publishAxis(target_pose);
 //   //   visual_tools_->trigger();
@@ -234,6 +290,9 @@ bool MoveitPlannerPostProcessor::PlanPath(
   std::vector<double> joint_group_positions;
   current_state->copyJointGroupPositions(joint_model_group,
                                          joint_group_positions);
+
+  double current_yaw = joint_group_positions[0];
+
   uint8_t joint_num = msg.position.size();
   for (uint8_t index = 0; index < joint_num; index++) {
     joint_group_positions[index] = msg.position[index];
@@ -254,15 +313,15 @@ bool MoveitPlannerPostProcessor::PlanPath(
     orient_constraint.header.frame_id = "base_platform";
     orient_constraint.link_name = "gripper_link";
     tf2::Quaternion quart;
-    quart.setRPY(0, M_PI_2, msg.position[0] * -1);
+    quart.setRPY(-1 * msg.position[0], M_PI_2, 0);
     ROS_INFO_STREAM("Quarternion: " << quart);
     geometry_msgs::Quaternion orientation;
     orientation = tf2::toMsg(quart);
     orient_constraint.orientation = orientation;
-    orient_constraint.absolute_x_axis_tolerance = 0.8;
-    orient_constraint.absolute_y_axis_tolerance = 0.8;
-    orient_constraint.absolute_z_axis_tolerance = 3.14;
-    orient_constraint.weight = 1.0;
+    orient_constraint.absolute_x_axis_tolerance = M_PI * 2/3;
+    orient_constraint.absolute_y_axis_tolerance = 0.3;
+    orient_constraint.absolute_z_axis_tolerance = 0.3;
+    orient_constraint.weight = 0.8;
     constraints.orientation_constraints.push_back(orient_constraint);
     move_group_->setPathConstraints(constraints);
   } else {
@@ -281,6 +340,9 @@ bool MoveitPlannerPostProcessor::PlanPath(
 
   if (success) {
     is_planned = true;
+    if (fake_execution_) {
+      move_group_->execute(my_plan);
+    }
   } else {
     ROS_WARN("Planning (joint space goal) is FAILED");
     is_planned = false;
