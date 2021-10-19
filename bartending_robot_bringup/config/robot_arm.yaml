@@ -24,9 +24,9 @@ wrist_y_rot:
   Return_Delay_Time: 0
   CW_Angle_Limit: 180
   CCW_Angle_Limit: 836
-  CW_Compliance_Slope: 254
-  CCW_Compliance_Slope: 254
-  Moving_Speed: 80
+  CW_Compliance_Slope: 32
+  CCW_Compliance_Slope: 32
+  Moving_Speed: 50
   Goal_Position: 520
   # Goal_Position: 757
 
@@ -37,7 +37,7 @@ elbow_y_rot:
   CCW_Angle_Limit: 835
   CW_Compliance_Slope: 32
   CCW_Compliance_Slope: 32
-  Moving_Speed: 30
+  Moving_Speed: 50
   Goal_Position: 389
   # Goal_Position: 467
 
@@ -48,7 +48,7 @@ base_y_rot:
   CCW_Angle_Limit: 800
   CW_Compliance_Slope: 32
   CCW_Compliance_Slope: 32
-  Moving_Speed: 30
+  Moving_Speed: 50
   Goal_Position: 515
   # Goal_Position: 448
 
@@ -57,8 +57,8 @@ base_z_rot:
   Return_Delay_Time: 0
   CW_Angle_Limit: 0
   CCW_Angle_Limit: 1023
-  CW_Compliance_Slope: 254
-  CCW_Compliance_Slope: 254
-  Moving_Speed: 80
+  CW_Compliance_Slope: 64
+  CCW_Compliance_Slope: 64
+  Moving_Speed: 50
   Goal_Position: 506
   # Goal_Position: 487

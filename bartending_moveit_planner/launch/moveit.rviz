@@ -10,7 +10,7 @@ Panels:
         - /MotionPlanning1/Planned Path1
         - /Axes1
       Splitter Ratio: 0.7425600290298462
-    Tree Height: 298
+    Tree Height: 327
   - Class: rviz/Help
     Name: Help
   - Class: rviz/Views
@@ -27,7 +27,7 @@ Panels:
         - /Status1
         - /MarkerArray1
       Splitter Ratio: 0.5
-    Tree Height: 297
+    Tree Height: 349
 Preferences:
   PromptSaveOnExit: true
 Toolbars:
@@ -111,6 +111,11 @@ Visualization Manager:
             Show Axes: false
             Show Trail: false
             Value: true
+          gripper_motor:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
           lower_link:
             Alpha: 1
             Show Axes: false
@@ -131,9 +136,9 @@ Visualization Manager:
         Robot Color: 150; 50; 150
         Show Robot Collision: false
         Show Robot Visual: true
-        Show Trail: false
+        Show Trail: true
         State Display Time: 0.05 s
-        Trail Step Size: 1
+        Trail Step Size: 3
         Trajectory Topic: move_group/display_planned_path
       Planning Metrics:
         Payload: 1
@@ -146,7 +151,7 @@ Visualization Manager:
         Colliding Link Color: 255; 0; 0
         Goal State Alpha: 1
         Goal State Color: 250; 128; 0
-        Interactive Marker Size: 0
+        Interactive Marker Size: 0.10000000149011612
         Joint Violation Color: 255; 0; 255
         Planning Group: bartender_arm
         Query Goal State: false
@@ -196,6 +201,11 @@ Visualization Manager:
             Show Axes: false
             Show Trail: false
             Value: true
+          gripper_motor:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
           lower_link:
             Alpha: 1
             Show Axes: false
@@ -211,7 +221,7 @@ Visualization Manager:
             Show Axes: false
             Show Trail: false
             Value: true
-        Robot Alpha: 0.5
+        Robot Alpha: 0.800000011920929
         Show Robot Collision: false
         Show Robot Visual: true
       Value: true
@@ -228,7 +238,7 @@ Visualization Manager:
       Marker Topic: /debug
       Name: MarkerArray
       Namespaces:
-        Axis: true
+        {}
       Queue Size: 100
       Value: true
   Enabled: true
@@ -247,30 +257,30 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/XYOrbit
-      Distance: 0.6957500576972961
+      Distance: 0.7680189609527588
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: 0.11356700211763382
-        Y: 0.10592000186443329
-        Z: 2.2351800055275817e-7
+        X: 0.24839776754379272
+        Y: 0.15747857093811035
+        Z: 2.5332030872959876e-7
       Focal Shape Fixed Size: true
       Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.3797961473464966
+      Pitch: 0.45979589223861694
       Target Frame: base_platform
       Value: XYOrbit (rviz)
-      Yaw: 0.7967791557312012
+      Yaw: 0.3135753273963928
     Saved: ~
 Window Geometry:
   Displays:
     collapsed: false
-  Height: 1018
+  Height: 1052
   Help:
     collapsed: false
   Hide Left Dock: false
@@ -279,9 +289,9 @@ Window Geometry:
     collapsed: false
   MotionPlanning - Trajectory Slider:
     collapsed: false
-  QMainWindow State: 000000ff00000000fd0000000200000000000002a200000392fc0200000007fb000000100044006900730070006c0061007900730100000047000001c6000000f100fffffffb0000000800480065006c00700000000342000000bb0000008400fffffffb0000000a0056006900650077007300000003b0000000b0000000c200fffffffb0000000c00430061006d00650072006100000002ff000001610000000000000000fb0000001e004d006f00740069006f006e00200050006c0061006e006e0069006e00670100000374000001890000000000000000fb00000044004d006f00740069006f006e0050006c0061006e006e0069006e00670020002d0020005400720061006a006500630074006f0072007900200053006c00690064006500720000000000ffffffff0000001900000019fb000000100044006900730070006c0061007900730100000214000001c5000000f100ffffff0000000200000494000001c9fc0100000001fb0000001c004d006f00740069006f006e0050006c0061006e006e0069006e006701000002a9000004940000024e00ffffff00000494000001c200000001000000020000000100000002fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
+  QMainWindow State: 000000ff00000000fd00000001000000000000025e000003b4fc0200000008fb000000100044006900730070006c0061007900730100000047000001e3000000f100fffffffb0000001c004d006f00740069006f006e0050006c0061006e006e0069006e00670100000231000001ca000001bd00fffffffb0000000800480065006c00700000000342000000bb0000008400fffffffb0000000a0056006900650077007300000003b0000000b0000000c200fffffffb0000000c00430061006d00650072006100000002ff000001610000000000000000fb0000001e004d006f00740069006f006e00200050006c0061006e006e0069006e00670100000374000001890000000000000000fb00000044004d006f00740069006f006e0050006c0061006e006e0069006e00670020002d0020005400720061006a006500630074006f0072007900200053006c00690064006500720000000000ffffffff0000001900000019fb000000100044006900730070006c0061007900730000000225000001d6000000f100ffffff000004d8000003b400000001000000020000000100000002fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
   Views:
     collapsed: false
   Width: 1853
   X: 67
-  Y: 34
+  Y: 0
