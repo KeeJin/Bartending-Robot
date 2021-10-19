@@ -4,26 +4,26 @@
 joint_limits:
   base_y_rot:
     has_velocity_limits: true
-    max_velocity: 0.2
+    max_velocity: 0.8
     has_acceleration_limits: false
     max_acceleration: 0
   base_z_rot:
     has_velocity_limits: true
-    max_velocity: 0.2
+    max_velocity: 0.8
     has_acceleration_limits: false
     max_acceleration: 0
   elbow_y_rot:
     has_velocity_limits: true
-    max_velocity: 0.2
+    max_velocity: 0.8
     has_acceleration_limits: false
     max_acceleration: 0
   gripper_z_rot:
     has_velocity_limits: true
-    max_velocity: 0.2
+    max_velocity: 0.8
     has_acceleration_limits: false
     max_acceleration: 0
   wrist_y_rot:
     has_velocity_limits: true
-    max_velocity: 0.2
+    max_velocity: 0.8
     has_acceleration_limits: false
     max_acceleration: 0

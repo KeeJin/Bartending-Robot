@@ -227,7 +227,7 @@
         <collision>
             <origin xyz="0 0 0.0645" />
             <geometry>
-                <box size="0.05 0.11 0.1" />
+                <box size="0.03 0.1 0.105" />
             </geometry>
         </collision>
     </link>
