@@ -11,11 +11,12 @@ class BartendingServer {
     MAX = 90, 
     MIDDLE = 0, 
     POUR = -10,
-    ALCOHOL1 = 30,
-    ALCOHOL2 = 60,
-    MIXER1 = -80, 
-    MIXER2 = -60, 
-    MIXER3 = -40, 
+    ALCOHOL1 = 80,
+    // ALCOHOL2 = 80,
+    MIXER1 = 60, 
+    // MIXER2 = -60, 
+    // MIXER3 = -40, 
+    SERVE = -80
   };
   enum class Alcohol { Jager, Vodka };
   enum class Mixer { Water, RedBull, Sprite };
@@ -63,14 +64,18 @@ class BartendingServer {
   ros::ServiceClient client_motor_control_;
   CustomerRequest current_request_;
   std::unordered_map<std::string, std::vector<double>> joint_states_;
-  const Position shaker_position_ = {Section::MIDDLE, 0.03, 0.08};
-  const Position pouring_position_ = {Section::POUR, 0.01, 0.07};
-  const Position shaker_cap_position_ = {Section::MIDDLE, 0.02, 0.08};
-  const Position jager_position_ = {Section::ALCOHOL1, 0.05, 0.02};
-  const Position vodka_position_ = {Section::ALCOHOL2, 0.03, 0.08};
-  const Position redbull_position_ = {Section::MIXER1, 0.05, 0.02};
-  const Position sprite_position_ = {Section::MIXER2, 0.03, 0.08};
-  const Position water_position_ = {Section::MIXER3, 0.06, 0.02};
+  const Position shaker_position_ = {Section::MIDDLE, 0.11, 0.035};
+  const Position shaker_cap_position_off_ = {Section::POUR, 0.11, 0.035};
+  const Position shaker_cap_position_on_ = {Section::MIDDLE, 0.11, 0.055};
+  const Position pouring_position_ = {Section::POUR, 0.11, 0.1};
+
+  const Position jager_position_ = {Section::ALCOHOL1, 0.11, 0.02};
+  // const Position vodka_position_ = {Section::ALCOHOL1, 0.11, 0.02};
+
+  const Position redbull_position_ = {Section::MIXER1, 0.11, 0.02};
+  // const Position sprite_position_ = {Section::MIXER2, 0.11, 0.02};
+  // const Position water_position_ = {Section::MIXER3, 0.11, 0.02};
+
   const float offset_ = 0.02;
 };
 

@@ -22,16 +22,17 @@ void BartendingServer::Initialise() {
           "/bartender/dynamixel_command");
 
   // Calculate IK for all objects once
-  // GenerateIKSolution("shaker", shaker_position_);
+  GenerateIKSolution("shaker", shaker_position_);
   GenerateIKSolution("pour", pouring_position_);
-  // GenerateIKSolution("shaker_cap", shaker_cap_position_);
+  GenerateIKSolution("shaker_cap_position_on", shaker_cap_position_on_);
+  GenerateIKSolution("shaker_cap_position_off", shaker_cap_position_off_);
   GenerateIKSolution("jager", jager_position_);
   // GenerateIKSolution("vodka", vodka_position_);
   GenerateIKSolution("redbull", redbull_position_);
   // GenerateIKSolution("sprite", sprite_position_);
   // GenerateIKSolution("water", water_position_);
-  // GenerateIKSolution("shaker_offset", shaker_position_, offset_);
-  // GenerateIKSolution("shaker_cap_offset", shaker_cap_position_, offset_);
+  GenerateIKSolution("shaker_offset", shaker_position_, offset_);
+  GenerateIKSolution("shaker_cap_position_on_offset", shaker_cap_position_on_, offset_);
   GenerateIKSolution("jager_offset", jager_position_, offset_);
   // GenerateIKSolution("vodka_offset", vodka_position_, offset_);
   GenerateIKSolution("redbull_offset", redbull_position_, offset_);
@@ -56,33 +57,38 @@ void BartendingServer::GenerateIKSolution(std::string object, Position position,
 
   // Solve for a1
   a1 = (double)position.section / 180 * M_PI;
-  ROS_INFO_STREAM("Calculated angle 1: " << a1);
+  ROS_INFO_STREAM("Calculated angle 1: " << a1 / M_PI * 180);
   joint_states.push_back(a1);
 
   // Solve for a3
   double squared_sum = distance * distance + position.height * position.height;
   a3 = acos((squared_sum - l2 * l2 - l3 * l3) / (2 * l2 * l3));
-  printf("%.3f\n", (squared_sum - l2 * l2 - l3 * l3) / (2 * l2 * l3));
-  printf("%.3f\n", acos((squared_sum - l2 * l2 - l3 * l3) / (2 * l2 * l3)));
+
+  // if (a3 > M_PI_2) {
+  //   a3 = -1 * (M_PI - a3);
+  // }
+  // printf("%.3f\n", (squared_sum - l2 * l2 - l3 * l3) / (2 * l2 * l3));
+  // printf("%.3f\n", acos((squared_sum - l2 * l2 - l3 * l3) / (2 * l2 * l3)));
 
   // Solve for a2
   b1 = atan2(position.height, distance);
   b2 = atan2(l3 * sin(a3), l2 + (l3 * cos(a3)));
-  a2 = M_PI_2 - (b1 - b2);
+  // ROS_INFO_STREAM("b1: " << b1 / M_PI * 180 << ", b2: " << b2 / M_PI * 180);
+  a2 = M_PI_2 - (b1 + b2);
 
-  ROS_INFO_STREAM("Calculated angle 2: " << a2);
-  ROS_INFO_STREAM("Calculated angle 3: " << a3);
+  ROS_INFO_STREAM("Calculated angle 2: " << a2 / M_PI * 180);
+  ROS_INFO_STREAM("Calculated angle 3: " << a3 / M_PI * 180);
   joint_states.push_back(a2);
   joint_states.push_back(a3);
 
   // Solve for a4
-  a4 = M_PI_2 - (a2 + a3);
+  a4 = M_PI_2 * 0.75 - (a2 + a3);
   joint_states.push_back(a4);
-  ROS_INFO_STREAM("Calculated angle 4: " << a4);
+  ROS_INFO_STREAM("Calculated angle 4: " << a4 / M_PI * 180);
 
   a5 = 0.0;
   joint_states.push_back(a5);
-  ROS_INFO_STREAM("Calculated angle 5: " << a5 << "\n---------------");
+  ROS_INFO_STREAM("Calculated angle 5: " << a5 / M_PI * 180 << "\n---------------");
 
   // Insert into unordered_map
   joint_states_.insert(std::make_pair(object, joint_states));
@@ -124,6 +130,7 @@ bool BartendingServer::PrepareCocktail() {
 bool BartendingServer::PourAlcohol() {
   std::string search_offset;
   std::string search_approach;
+  int gripper_close_pos = 300;
   switch (current_request_.alcohol) {
     case Alcohol::Jager:
       search_offset = "jager_offset";
@@ -140,7 +147,7 @@ bool BartendingServer::PourAlcohol() {
 
   // Move arm to offset position
   ROS_INFO("Moving to offset");
-  if (!MoveTo(search_offset, 9)) {
+  if (!MoveTo(search_offset, 8)) {
     return false;
   }
 
@@ -152,20 +159,20 @@ bool BartendingServer::PourAlcohol() {
 
   // Grip
   ROS_INFO("Grasping");
-  if (!Grasp(300)) {
+  if (!Grasp(gripper_close_pos)) {
     return false;
   }
 
   // Move arm to pouring position
-  if (!MoveTo("pour", 7)) {
+  if (!MoveTo("pour", 6)) {
     return false;
   }
 
   // Pour alcohol
   Pour(1000);
 
-  // Move arm to alcohol position poised to grip
-  if (!MoveTo(search_approach, 9, true)) {
+  // Move arm to alcohol position poised to release
+  if (!MoveTo(search_approach, 6, true)) {
     return false;
   }
 
@@ -176,11 +183,13 @@ bool BartendingServer::PourAlcohol() {
   if (!MoveTo(search_offset, 5)) {
     return false;
   }
+
   return true;
 }
 bool BartendingServer::PourMixer() {
   std::string search_offset;
   std::string search_approach;
+  int gripper_close_pos = 300;
   switch (current_request_.mixer) {
     case Mixer::Water:
       search_offset = "water_offset";
@@ -200,7 +209,7 @@ bool BartendingServer::PourMixer() {
   }
 
   // Move arm to offset position
-  if (!MoveTo(search_offset, 9)) {
+  if (!MoveTo(search_offset, 8)) {
     return false;
   }
 
@@ -210,12 +219,12 @@ bool BartendingServer::PourMixer() {
   }
 
   // Grip
-  if (!Grasp(300)) {
+  if (!Grasp(gripper_close_pos)) {
     return false;
   }
 
   // Move arm to pouring position
-  if (!MoveTo("pour", 7, true)) {
+  if (!MoveTo("pour", 6, true)) {
     return false;
   }
 
@@ -223,7 +232,7 @@ bool BartendingServer::PourMixer() {
   Pour(1000);
 
   // Move arm to mixer position poised to release
-  if (!MoveTo(search_approach, 9, true)) {
+  if (!MoveTo(search_approach, 6, true)) {
     return false;
   }
 
@@ -234,6 +243,7 @@ bool BartendingServer::PourMixer() {
   if (!MoveTo(search_offset, 5)) {
     return false;
   }
+
   return true;
 }
 
@@ -252,7 +262,7 @@ bool BartendingServer::ServeCocktail() {
 
 bool BartendingServer::Grasp(int motor_position) {
   bartending_gripper_service::CloseGripper msg;
-  msg.request.motor_position = 300;
+  msg.request.motor_position = motor_position;
   if (client_gripper_close_.call(msg)) {
     if (msg.response.success) {
       ROS_INFO("Gripper closed successfully.");
