@@ -5,6 +5,8 @@
 #include <dynamixel_workbench_msgs/DynamixelCommand.h>
 #include <unistd.h>
 
+// #define DEBUG
+
 void BartendingServer::Initialise() {
   // Set up ROS communication
   service_main_ =
@@ -24,7 +26,19 @@ void BartendingServer::Initialise() {
   // Calculate IK for all objects once
   GenerateIKSolution("shaker", shaker_position_);
   GenerateIKSolution("pour", pouring_position_);
-  GenerateIKSolution("shaker_cap_position_on", shaker_cap_position_on_);
+  GenerateIKSolution("serve", serving_position_);
+  GenerateIKSolution("shake", shaking_position_);
+
+  auto it = joint_states_.find("shake");
+  if (it != joint_states_.end()) {
+    std::vector<double> joint_states = it->second;
+    joint_states[3] -= M_PI_2;
+    joint_states_.insert(std::make_pair("home", joint_states));
+  }
+
+  GenerateIKSolution("shaker_cap_position_put_on", shaker_cap_position_put_on_);
+  GenerateIKSolution("shaker_cap_position_take_off",
+                     shaker_cap_position_take_off_);
   GenerateIKSolution("shaker_cap_position_off", shaker_cap_position_off_);
   GenerateIKSolution("jager", jager_position_);
   // GenerateIKSolution("vodka", vodka_position_);
@@ -32,12 +46,15 @@ void BartendingServer::Initialise() {
   // GenerateIKSolution("sprite", sprite_position_);
   // GenerateIKSolution("water", water_position_);
   GenerateIKSolution("shaker_offset", shaker_position_, offset_);
-  GenerateIKSolution("shaker_cap_position_on_offset", shaker_cap_position_on_, offset_);
+  GenerateIKSolution("shaker_cap_position_off_offset", shaker_cap_position_off_,
+                     offset_);
   GenerateIKSolution("jager_offset", jager_position_, offset_);
   // GenerateIKSolution("vodka_offset", vodka_position_, offset_);
   GenerateIKSolution("redbull_offset", redbull_position_, offset_);
   // GenerateIKSolution("sprite_offset", sprite_position_, offset_);
   // GenerateIKSolution("water_offset", water_position_, offset_);
+
+  GoHome();
 }
 
 void BartendingServer::GenerateIKSolution(std::string object, Position position,
@@ -68,12 +85,14 @@ void BartendingServer::GenerateIKSolution(std::string object, Position position,
   //   a3 = -1 * (M_PI - a3);
   // }
   // printf("%.3f\n", (squared_sum - l2 * l2 - l3 * l3) / (2 * l2 * l3));
-  // printf("%.3f\n", acos((squared_sum - l2 * l2 - l3 * l3) / (2 * l2 * l3)));
+  // printf("%.3f\n", acos((squared_sum - l2 * l2 - l3 * l3) / (2 * l2 *
+  // l3)));
 
   // Solve for a2
   b1 = atan2(position.height, distance);
   b2 = atan2(l3 * sin(a3), l2 + (l3 * cos(a3)));
-  // ROS_INFO_STREAM("b1: " << b1 / M_PI * 180 << ", b2: " << b2 / M_PI * 180);
+  // ROS_INFO_STREAM("b1: " << b1 / M_PI * 180 << ", b2: " << b2 / M_PI *
+  // 180);
   a2 = M_PI_2 - (b1 + b2);
 
   ROS_INFO_STREAM("Calculated angle 2: " << a2 / M_PI * 180);
@@ -82,13 +101,14 @@ void BartendingServer::GenerateIKSolution(std::string object, Position position,
   joint_states.push_back(a3);
 
   // Solve for a4
-  a4 = M_PI_2 * 0.75 - (a2 + a3);
+  a4 = M_PI_2 * 0.9 - (a2 + a3);
   joint_states.push_back(a4);
   ROS_INFO_STREAM("Calculated angle 4: " << a4 / M_PI * 180);
 
   a5 = 0.0;
   joint_states.push_back(a5);
-  ROS_INFO_STREAM("Calculated angle 5: " << a5 / M_PI * 180 << "\n---------------");
+  ROS_INFO_STREAM("Calculated angle 5: " << a5 / M_PI * 180
+                                         << "\n---------------");
 
   // Insert into unordered_map
   joint_states_.insert(std::make_pair(object, joint_states));
@@ -121,11 +141,15 @@ bool BartendingServer::InterpretRequest(int8_t alcohol, int8_t mixer) {
 bool BartendingServer::PrepareCocktail() {
   if (PourAlcohol() && PourMixer() && CoverShaker() && Shake() &&
       ServeCocktail()) {
+    GoHome();
     ROS_INFO("Cocktail is ready.");
     return true;
   }
+  GoHome();
   return false;
 }
+
+bool BartendingServer::GoHome() { return (MoveTo("shake", 6, true)); }
 
 bool BartendingServer::PourAlcohol() {
   std::string search_offset;
@@ -146,10 +170,10 @@ bool BartendingServer::PourAlcohol() {
   }
 
   // Move arm to offset position
-  ROS_INFO("Moving to offset");
-  if (!MoveTo(search_offset, 8)) {
-    return false;
-  }
+  // ROS_INFO("Moving to offset");
+  // if (!MoveTo(search_offset, 8)) {
+  //   return false;
+  // }
 
   // Move arm to alcohol position poised to grip
   ROS_INFO("Moving to alcohol position");
@@ -180,9 +204,9 @@ bool BartendingServer::PourAlcohol() {
   OpenGripper();
 
   // Move arm to offset position
-  if (!MoveTo(search_offset, 5)) {
-    return false;
-  }
+  // if (!MoveTo(search_offset, 5)) {
+  //   return false;
+  // }
 
   return true;
 }
@@ -209,9 +233,9 @@ bool BartendingServer::PourMixer() {
   }
 
   // Move arm to offset position
-  if (!MoveTo(search_offset, 8)) {
-    return false;
-  }
+  // if (!MoveTo(search_offset, 8)) {
+  //   return false;
+  // }
 
   // Move arm to mixer position poised to grip
   if (!MoveTo(search_approach, 5, true)) {
@@ -240,27 +264,169 @@ bool BartendingServer::PourMixer() {
   OpenGripper();
 
   // Move arm to offset position
-  if (!MoveTo(search_offset, 5)) {
+  // if (!MoveTo(search_offset, 5)) {
+  //   return false;
+  // }
+
+  return true;
+}
+
+bool BartendingServer::CoverShaker() {
+  int gripper_close_pos;
+  // Move arm to offset position
+  // if (!MoveTo("shaker_cap_position_off_offset", 6)) {
+  //   return false;
+  // }
+
+  // Move arm to cap position poised to grip
+  if (!MoveTo("shaker_cap_position_off", 5)) {
+    return false;
+  }
+
+  // Grip
+  gripper_close_pos = 300;
+  if (!Grasp(gripper_close_pos)) {
+    return false;
+  }
+
+  // Move arm to capping position
+  if (!MoveTo("shaker_cap_position_put_on", 5)) {
+    return false;
+  }
+
+  // Release
+  OpenGripper();
+
+  return true;
+}
+bool BartendingServer::Shake() {
+  int gripper_close_pos = 300;
+  // Move arm to offset position
+  if (!MoveTo("shaker_offset", 8)) {
+    return false;
+  }
+
+  // Move arm to shaker position poised to grip
+  if (!MoveTo("shaker", 5, true)) {
+    return false;
+  }
+
+  // Grip
+  if (!Grasp(gripper_close_pos)) {
+    return false;
+  }
+
+  // Move arm to shaking position
+  if (!MoveTo("shake", 5, true)) {
+    return false;
+  }
+#ifndef DEBUG
+  ROS_INFO("Start shaking");
+  dynamixel_workbench_msgs::DynamixelCommand motor_cmd;
+  motor_cmd.request.id = 1;
+  motor_cmd.request.addr_name = "Goal_Position";
+
+  for (int i = 0; i < 3; ++i) {
+    motor_cmd.request.value = 550;
+    while (!client_motor_control_.call(motor_cmd)) {
+    }
+    sleep(4);
+    motor_cmd.request.value = 950;
+    while (!client_motor_control_.call(motor_cmd)) {
+    }
+  }
+  sleep(3);
+  motor_cmd.request.value = 750;
+  while (!client_motor_control_.call(motor_cmd))
+    ;
+  sleep(3);
+#endif
+  return true;
+}
+
+bool BartendingServer::ServeCocktail() {
+  int gripper_close_pos;
+  // Move arm to shaker position poised to release
+  if (!MoveTo("shaker", 5, true)) {
+    return false;
+  }
+
+  // Release
+  if (!OpenGripper()) {
+    return false;
+  }
+
+  // Move to Cap
+  if (!MoveTo("shaker_cap_position_take_off", 3, true)) {
+    return false;
+  }
+
+  gripper_close_pos = 300;
+  // Grip
+  if (!Grasp(gripper_close_pos)) {
+    return false;
+  }
+
+  // Move Cap
+  if (!MoveTo("shaker_cap_position_put_on", 3, true)) {
+    return false;
+  }
+
+  // Move Cap
+  if (!MoveTo("shaker_cap_position_off", 3, true)) {
+    return false;
+  }
+
+  // Release
+  if (!OpenGripper()) {
+    return false;
+  }
+
+  // Move arm to offset position
+  if (!MoveTo("shaker_offset", 8)) {
+    return false;
+  }
+
+  // Move arm to shaker position poised to grip
+  if (!MoveTo("shaker", 5, true)) {
+    return false;
+  }
+
+  gripper_close_pos = 300;
+  // Grip
+  if (!Grasp(gripper_close_pos)) {
+    return false;
+  }
+
+  // Move arm to serving position
+  if (!MoveTo("serve", 6, true)) {
+    return false;
+  }
+
+  if (!Pour(2000)) {
+    return false;
+  }
+
+  // Move arm to shaker position poised to release
+  if (!MoveTo("shaker", 5, true)) {
+    return false;
+  }
+
+  // Release
+  if (!OpenGripper()) {
+    return false;
+  }
+
+  // Move arm to shaking position to rest
+  if (!MoveTo("shake", 6, true)) {
     return false;
   }
 
   return true;
 }
 
-bool BartendingServer::CoverShaker() {
-  // TODO
-  return true;
-}
-bool BartendingServer::Shake() {
-  // TODO
-  return true;
-}
-bool BartendingServer::ServeCocktail() {
-  // TODO
-  return true;
-}
-
 bool BartendingServer::Grasp(int motor_position) {
+#ifndef DEBUG
   bartending_gripper_service::CloseGripper msg;
   msg.request.motor_position = motor_position;
   if (client_gripper_close_.call(msg)) {
@@ -272,10 +438,13 @@ bool BartendingServer::Grasp(int motor_position) {
   }
   ROS_INFO("Gripper failed to close.");
   return false;
-  // return true;
+#else
+  return true;
+#endif
 }
 
 bool BartendingServer::OpenGripper() {
+#ifndef DEBUG
   std_srvs::Trigger msg;
   if (client_gripper_open_.call(msg)) {
     if (msg.response.success) {
@@ -286,15 +455,18 @@ bool BartendingServer::OpenGripper() {
   }
   ROS_INFO("Gripper failed to open.");
   return false;
-  // return true;
+#else
+  return true;
+#endif
 }
 
 bool BartendingServer::MoveTo(std::string goal, int delay, bool keep_level) {
   open_manipulator_msgs::SetJointPosition msg;
   msg.request.planning_group = "bartender_arm";
+  // ROS_INFO_STREAM("Moving to: " << goal);
   auto it = joint_states_.find(goal);
   if (it == joint_states_.end()) {
-    ROS_ERROR("IK entry not found!\n");
+    ROS_ERROR_STREAM("IK entry not found for: " << goal);
     return false;
   } else {
     ROS_INFO("Joint angles: ");
@@ -322,6 +494,7 @@ bool BartendingServer::MoveTo(std::string goal, int delay, bool keep_level) {
   return true;
 }
 bool BartendingServer::Pour(int microseconds) {
+#ifndef DEBUG
   dynamixel_workbench_msgs::DynamixelCommand motor_cmd;
   motor_cmd.request.id = 1;
   motor_cmd.request.addr_name = "Goal_Position";
@@ -334,6 +507,7 @@ bool BartendingServer::Pour(int microseconds) {
   while (!client_motor_control_.call(motor_cmd))
     ;
   sleep(5);
+#endif
   return true;
 }
 

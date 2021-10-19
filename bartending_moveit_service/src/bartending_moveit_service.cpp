@@ -42,7 +42,8 @@ void MoveitPlannerPostProcessor::Initialise() {
 
   // Create base collision object
   moveit_msgs::CollisionObject collision_object;
-  ROS_INFO_STREAM("move_group_->getPlanningFrame(): " << move_group_->getPlanningFrame().c_str());
+  ROS_INFO_STREAM("move_group_->getPlanningFrame(): "
+                  << move_group_->getPlanningFrame().c_str());
   collision_object.header.frame_id = move_group_->getPlanningFrame();
   collision_object.id = "table_boundary";
   shape_msgs::SolidPrimitive platform;
@@ -87,9 +88,9 @@ void MoveitPlannerPostProcessor::Initialise() {
   shape_msgs::SolidPrimitive divider;
   divider.type = platform.BOX;
   divider.dimensions.resize(3);
-  divider.dimensions[0] = 0.09;
+  divider.dimensions[0] = 0.07;
   divider.dimensions[1] = 0.01;
-  divider.dimensions[2] = 0.08;
+  divider.dimensions[2] = 0.17;
 
   geometry_msgs::Pose divider_pose;
   tf2::Quaternion quart;
@@ -97,9 +98,9 @@ void MoveitPlannerPostProcessor::Initialise() {
   geometry_msgs::Quaternion orientation;
   divider_pose.orientation = tf2::toMsg(quart);
   // divider1_pose.orientation.w = 1.0;
-  divider_pose.position.x = 0.24;
+  divider_pose.position.x = 0.2;
   divider_pose.position.y = 0.1;
-  divider_pose.position.z = 0.095;
+  divider_pose.position.z = 0.1;
 
   collision_object.primitives.push_back(divider);
   collision_object.primitive_poses.push_back(divider_pose);
@@ -108,29 +109,23 @@ void MoveitPlannerPostProcessor::Initialise() {
   quart.setRPY(0, 0, -M_PI / 9);
   divider_pose.orientation = tf2::toMsg(quart);
   // divider1_pose.orientation.w = 1.0;
-  divider_pose.position.x = 0.24;
   divider_pose.position.y = -0.1;
-  divider_pose.position.z = 0.095;
 
   collision_object.primitives.push_back(divider);
   collision_object.primitive_poses.push_back(divider_pose);
 
-  // shape_msgs::SolidPrimitive bottle;
-  // bottle.type = bottle.CYLINDER;
-  // bottle.dimensions.resize(2);
-  // bottle.dimensions[0] = 0.09;
-  // bottle.dimensions[1] = 0.12;
+  // divider.dimensions[0] = 0.09;
+  // divider.dimensions[1] = 0.09;
+  // divider.dimensions[2] = 0.01;
 
-  // geometry_msgs::Pose bottle_pose;
-  // bottle_pose.orientation.w = 1.0;
-  // bottle_pose.position.x = 0.05;
-  // bottle_pose.position.y = 0.0;
-  // bottle_pose.position.z = 0.05;
+  // divider_pose.position.x = 0.18;
+  // divider_pose.position.y = 0.0;
+  // divider_pose.position.z = 0.27;
 
-  // collision_object.primitives.push_back(bottle);
-  // collision_object.primitive_poses.push_back(box_pose);
+  // collision_object.primitives.push_back(divider);
+  // collision_object.primitive_poses.push_back(divider_pose);
+
   collision_object.operation = collision_object.ADD;
-
   std::vector<moveit_msgs::CollisionObject> collision_objects;
   collision_objects.push_back(collision_object);
 
@@ -318,7 +313,7 @@ bool MoveitPlannerPostProcessor::PlanPath(
     geometry_msgs::Quaternion orientation;
     orientation = tf2::toMsg(quart);
     orient_constraint.orientation = orientation;
-    orient_constraint.absolute_x_axis_tolerance = M_PI * 2/3;
+    orient_constraint.absolute_x_axis_tolerance = M_PI * 2 / 3;
     orient_constraint.absolute_y_axis_tolerance = 0.3;
     orient_constraint.absolute_z_axis_tolerance = 0.3;
     orient_constraint.weight = 0.8;
