@@ -49,6 +49,7 @@
     <disable_collisions link1="gripper_link" link2="tooltip_mount" reason="Adjacent" />
     <disable_collisions link1="gripper_motor" link2="lower_link" reason="User" />
     <disable_collisions link1="gripper_motor" link2="tooltip_mount" reason="User" />
+    <disable_collisions link1="lower_link" link2="tooltip_mount" reason="User" />
     <disable_collisions link1="gripper_motor" link2="upper_link" reason="User" />
     <disable_collisions link1="lower_link" link2="upper_link" reason="Adjacent" />
 </robot>
