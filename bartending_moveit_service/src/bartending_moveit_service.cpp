@@ -83,14 +83,14 @@ void MoveitPlannerPostProcessor::Initialise() {
 
   collision_object.primitives.push_back(platform);
   collision_object.primitive_poses.push_back(box_pose);
-
+/*
   // left divider
   shape_msgs::SolidPrimitive divider;
   divider.type = platform.BOX;
   divider.dimensions.resize(3);
   divider.dimensions[0] = 0.07;
   divider.dimensions[1] = 0.01;
-  divider.dimensions[2] = 0.17;
+  divider.dimensions[2] = 0.15;
 
   geometry_msgs::Pose divider_pose;
   tf2::Quaternion quart;
@@ -124,7 +124,7 @@ void MoveitPlannerPostProcessor::Initialise() {
 
   // collision_object.primitives.push_back(divider);
   // collision_object.primitive_poses.push_back(divider_pose);
-
+*/
   collision_object.operation = collision_object.ADD;
   std::vector<moveit_msgs::CollisionObject> collision_objects;
   collision_objects.push_back(collision_object);
