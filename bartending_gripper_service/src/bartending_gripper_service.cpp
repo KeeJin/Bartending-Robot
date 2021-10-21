@@ -17,7 +17,7 @@ void BartendingGripper::Initialise() {
 bool BartendingGripper::Open(std_srvs::Trigger::Request& req,
                              std_srvs::Trigger::Response& res) {
   ROS_INFO("Opening gripper...\n");
-  motor_cmd_.request.value = 650;
+  motor_cmd_.request.value = 500;
   if (client_motor_control_.call(motor_cmd_)) {
     if (motor_cmd_.response.comm_result) {
       ROS_INFO("gripper open success.\n");
