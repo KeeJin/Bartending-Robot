@@ -79,7 +79,7 @@
         <parent link="base_link" />
         <child link="base_link_offset" />
         <axis xyz="0 0 1" />
-        <limit effort="0" lower="-3.14" upper="3.14" velocity="0.2" />
+        <limit effort="100" lower="-3.14" upper="3.14" velocity="1.7436" />
     </joint>
 
     <!-- shoulder to elbow -->
@@ -111,7 +111,7 @@
         <parent link="base_link_offset" />
         <child link="upper_link" />
         <axis xyz="0 1 0" />
-        <limit effort="0" lower="-1.007" upper="1.447" velocity="0.2" />
+        <limit effort="100" lower="-1.825" upper="1.447" velocity="1.1624" />
     </joint>
 
     <!-- elbow to wrist -->
@@ -143,15 +143,15 @@
         <parent link="upper_link" />
         <child link="lower_link" />
         <axis xyz="0 1 0" />
-        <limit effort="0" lower="-1.687" upper="1.6619" velocity="0.2" />
+        <limit effort="100" lower="-1.687" upper="1.6619" velocity="1.1624" />
     </joint>
 
     <!-- wrist to tooltip -->
     <link name="end_effector_link">
         <visual>
-            <origin xyz="0 0 0.034" />
+            <origin xyz="0 0 0.0025" />
             <geometry>
-                <box size="0.03 0.05 0.068" />
+                <box size="0.03 0.05 0.005" />
             </geometry>
         </visual>
         <!-- <inertial>
@@ -163,9 +163,9 @@
                 izz="1.0"/>
         </inertial> -->
         <collision>
-            <origin xyz="0 0 0.034" />
+            <origin xyz="0 0 0.0025" />
             <geometry>
-                <box size="0.03 0.05 0.068" />
+                <box size="0.03 0.05 0.005" />
             </geometry>
         </collision>
     </link>
@@ -175,15 +175,15 @@
         <parent link="lower_link" />
         <child link="end_effector_link" />
         <axis xyz="0 1 0" />
-        <limit effort="0" lower="-1.713" upper="1.6413" velocity="0.2" />
+        <limit effort="100" lower="-1.713" upper="1.6413" velocity="1.7436" />
     </joint>
 
     <!-- tooltip -->
     <link name="tooltip_mount">
         <visual>
-            <origin xyz="0 0 0" />
+            <origin xyz="-0.011 0 -0.059" />
             <geometry>
-                <box size="0.05 0.05 0.029" />
+                <box size="0.078 0.05 0.038" />
             </geometry>
         </visual>
         <!-- <inertial>
@@ -195,9 +195,9 @@
                 izz="1.0"/>
         </inertial> -->
         <collision>
-            <origin xyz="0 0 0" />
+            <origin xyz="-0.011 0 -0.059" />
             <geometry>
-                <box size="0.05 0.05 0.029" />
+                <box size="0.078 0.05 0.038" />
             </geometry>
         </collision>
     </link>
@@ -211,7 +211,7 @@
     <!-- gripper component -->
     <link name="gripper_link">
         <visual>
-            <origin xyz="0 0 0.0645" />
+            <origin xyz="-0.035 0 0.012" />
             <geometry>
                 <box size="0.03 0.1 0.105" />
             </geometry>
@@ -225,7 +225,7 @@
                 izz="1.0"/>
         </inertial> -->
         <collision>
-            <origin xyz="0 0 0.0645" />
+            <origin xyz="-0.035 0 0.012" />
             <geometry>
                 <box size="0.03 0.1 0.105" />
             </geometry>
@@ -237,9 +237,10 @@
         <parent link="tooltip_mount" />
         <child link="gripper_link" />
         <axis xyz="0 0 1" />
-        <limit effort="0" lower="-3.14" upper="3.14" velocity="0.2" />
+        <limit effort="100" lower="-3.14" upper="3.14" velocity="1.7436" />
     </joint>
 
+    <!-- pseudo link to avoid error messages -->
     <link name="gripper_motor">
         <visual>
             <origin xyz="0 0 0.0" />
