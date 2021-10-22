@@ -8,16 +8,18 @@ class BartendingServer {
   enum Section {
     MIN = -90,
     MAX = 90,
-    SHAKER = -10,
-    CAP = 30,
-    POUR = -30,
-    ALCOHOL1 = -80,
+    CENTER = 0,
+    SHAKER = -15,
+    CAP = 18,
+    POUR = -28,
+    ALCOHOL1 = -85,
     // ALCOHOL2 = 80,
-    MIXER1 = -45,
+    MIXER1 = -65,
     // MIXER2 = -60,
     // MIXER3 = -40,
     SERVE = 65
   };
+  enum class Direction { Left, Right};
   enum class Alcohol { Jager, Vodka };
   enum class Mixer { Water, RedBull, Sprite };
   struct CustomerRequest {
@@ -37,7 +39,8 @@ class BartendingServer {
  private:
   void Initialise();
   void GenerateIKSolution(std::string object, Position position,
-                          double offset = 0.0);
+                          double offset_dist = 0.0, double offset_height = 0.0,
+                          float mass_discount = 1.0);
   bool HandleCustomerRequest(
       bartending_server::BartenderCocktailRequest::Request& req,
       bartending_server::BartenderCocktailRequest::Response& res);
@@ -54,7 +57,7 @@ class BartendingServer {
   bool Grasp(int motor_position);
   bool OpenGripper();
   bool MoveTo(std::string goal, int delay, bool keep_level = false);
-  bool Pour(int microseconds);
+  bool Pour(Direction dir, int microseconds);
 
  private:
   ros::NodeHandle nh_;
@@ -69,23 +72,23 @@ class BartendingServer {
   const int alcohol_close_ = 232;
   const int mixer_close_ = 232;
   std::unordered_map<std::string, std::vector<double>> joint_states_;
-  const Position shaker_position_ = {Section::SHAKER, -0.01, 0.085};
-  const Position shaker_cap_position_off_ = {Section::CAP, -0.01, 0.104};
-  const Position shaker_cap_position_put_on_ = {Section::SHAKER, -0.01, 0.128};
-  const Position shaker_cap_position_take_off_ = {Section::SHAKER, -0.01, 0.098};
+  const Position shaker_position_ = {Section::SHAKER, 0.0257, 0.0711};
+  const Position shaker_cap_position_off_ = {Section::CAP, 0.05, 0.1155};
+  const Position shaker_cap_position_put_on_ = {Section::SHAKER, 0.05, 0.13};
+  const Position shaker_cap_position_take_off_ = {Section::SHAKER, 0.0257,
+                                                  0.086};
 
-  const Position pouring_position_ = {Section::POUR, -0.01, 0.1};
-  const Position shaking_position_ = {Section::SHAKER, -0.03, 0.1};
+  const Position pouring_position_ = {Section::POUR, 0.026, 0.13};
+  const Position shaking_position_ = {Section::SHAKER, -0.03, 0.11};
   const Position serving_position_ = {Section::SERVE, 0.03, 0.094};
+  const Position home_position_ = {Section::POUR, -0.04, 0.11};
 
-  const Position jager_position_ = {Section::ALCOHOL1, 0.03, 0.098};
-  // const Position vodka_position_ = {Section::ALCOHOL1, 0.11, 0.02};
+  const Position jager_position_ = {Section::ALCOHOL1, 0.03, 0.1};
+  // const Position vodka_position_ = {Section::ALCOHOL2, 0.11, 0.02};
 
-  const Position redbull_position_ = {Section::MIXER1, 0.053, 0.098};
+  const Position redbull_position_ = {Section::MIXER1, 0.03, 0.095};
   // const Position sprite_position_ = {Section::MIXER2, 0.11, 0.02};
   // const Position water_position_ = {Section::MIXER3, 0.11, 0.02};
-
-  const float offset_ = 0.03;
 };
 
 #endif /* BARTENDING_SERVER */
