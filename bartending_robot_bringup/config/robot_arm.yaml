@@ -11,7 +11,7 @@ gripper_actuator:
 gripper_z_rot:
   ID: 1
   Return_Delay_Time: 0
-  CW_Angle_Limit: 471
+  CW_Angle_Limit: 300
   CCW_Angle_Limit: 1023
   CW_Compliance_Slope: 64
   CCW_Compliance_Slope: 64
@@ -58,4 +58,4 @@ base_z_rot:
   CW_Compliance_Slope: 64
   CCW_Compliance_Slope: 64
   Moving_Speed: 150
-  Goal_Position: 506
+  Goal_Position: 400

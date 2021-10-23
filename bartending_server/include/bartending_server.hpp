@@ -17,7 +17,7 @@ class BartendingServer {
     MIXER1 = -65,
     // MIXER2 = -60,
     // MIXER3 = -40,
-    SERVE = 65
+    SERVE = 77
   };
   enum class Direction { Left, Right};
   enum class Alcohol { Jager, Vodka };
@@ -68,25 +68,25 @@ class BartendingServer {
   ros::ServiceClient client_motor_control_;
   CustomerRequest current_request_;
   const int shaker_close_ = 436;
-  const int shake_cap_close_ = 410;
+  const int shake_cap_close_ = 380;
   const int alcohol_close_ = 232;
   const int mixer_close_ = 232;
   std::unordered_map<std::string, std::vector<double>> joint_states_;
-  const Position shaker_position_ = {Section::SHAKER, 0.0257, 0.0711};
-  const Position shaker_cap_position_off_ = {Section::CAP, 0.05, 0.1155};
-  const Position shaker_cap_position_put_on_ = {Section::SHAKER, 0.05, 0.13};
-  const Position shaker_cap_position_take_off_ = {Section::SHAKER, 0.0257,
-                                                  0.086};
+  const Position shaker_position_ = {Section::SHAKER, 0.058, 0.095};
+  const Position shaker_cap_position_off_ = {Section::CAP, 0.023, 0.096};
+  const Position shaker_cap_position_put_on_ = {Section::SHAKER, 0.023, 0.13};
+  const Position shaker_cap_position_take_off_ = {Section::SHAKER, 0.035,
+                                                  0.11};
 
-  const Position pouring_position_ = {Section::POUR, 0.026, 0.13};
+  const Position pouring_position_ = {Section::POUR, 0.03, 0.13};
   const Position shaking_position_ = {Section::SHAKER, -0.03, 0.11};
-  const Position serving_position_ = {Section::SERVE, 0.03, 0.094};
-  const Position home_position_ = {Section::POUR, -0.04, 0.11};
+  const Position serving_position_ = {Section::SERVE, 0.045, 0.125};
+  const Position home_position_ = {Section::POUR, -0.05, 0.125};
 
-  const Position jager_position_ = {Section::ALCOHOL1, 0.03, 0.1};
+  // const Position jager_position_ = {Section::ALCOHOL1, 0.03, 0.1};
   // const Position vodka_position_ = {Section::ALCOHOL2, 0.11, 0.02};
 
-  const Position redbull_position_ = {Section::MIXER1, 0.03, 0.095};
+  // const Position redbull_position_ = {Section::MIXER1, 0.03, 0.095};
   // const Position sprite_position_ = {Section::MIXER2, 0.11, 0.02};
   // const Position water_position_ = {Section::MIXER3, 0.11, 0.02};
 };
