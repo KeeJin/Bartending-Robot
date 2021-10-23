@@ -1,0 +1,15 @@
+<launch>
+
+    <!-- Run Moveit! -->
+    <include file="$(find bartending_robot_bringup)/launch/moveit.launch" />
+    <arg name="allow_trajectory_execution" value="true"/>
+    <arg name="fake_execution" value="true"/>
+
+    <!-- Run Moveit! service node -->
+    <include file="$(find bartending_moveit_service)/launch/moveit_bridge.launch" />
+    <arg name="enable_fake_execution" value="true"/>
+
+    <!-- Run main Bartending server -->
+    <include file="$(find bartending_server)/launch/bartending_server.launch" />
+
+</launch>

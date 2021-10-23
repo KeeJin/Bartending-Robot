@@ -11,11 +11,11 @@ gripper_actuator:
 gripper_z_rot:
   ID: 1
   Return_Delay_Time: 0
-  CW_Angle_Limit: 471
+  CW_Angle_Limit: 300
   CCW_Angle_Limit: 1023
   CW_Compliance_Slope: 64
   CCW_Compliance_Slope: 64
-  Moving_Speed: 150
+  Moving_Speed: 100
   Goal_Position: 757
 
 wrist_y_rot:
@@ -37,7 +37,7 @@ elbow_y_rot:
   CCW_Compliance_Slope: 32
   Moving_Speed: 100
   Goal_Position: 687
-  Punch: 80
+  # Punch: 80
 
 base_y_rot:
   ID: 4
@@ -47,8 +47,8 @@ base_y_rot:
   CW_Compliance_Slope: 32
   CCW_Compliance_Slope: 32
   Moving_Speed: 100
-  Goal_Position: 320
-  Punch: 80
+  Goal_Position: 429
+  # Punch: 80
 
 base_z_rot:
   ID: 3
@@ -58,4 +58,4 @@ base_z_rot:
   CW_Compliance_Slope: 64
   CCW_Compliance_Slope: 64
   Moving_Speed: 150
-  Goal_Position: 506
+  Goal_Position: 400

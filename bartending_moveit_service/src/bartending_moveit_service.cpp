@@ -71,7 +71,6 @@ void MoveitPlannerPostProcessor::Initialise() {
 
   box_pose.position.x = 0.1;
   box_pose.position.y = 0.25;
-  box_pose.position.z = 0.03;
 
   collision_object.primitives.push_back(platform);
   collision_object.primitive_poses.push_back(box_pose);
@@ -79,52 +78,96 @@ void MoveitPlannerPostProcessor::Initialise() {
   // right platform
   box_pose.position.x = 0.1;
   box_pose.position.y = -0.25;
-  box_pose.position.z = 0.03;
 
   collision_object.primitives.push_back(platform);
   collision_object.primitive_poses.push_back(box_pose);
-/*
-  // left divider
-  shape_msgs::SolidPrimitive divider;
-  divider.type = platform.BOX;
-  divider.dimensions.resize(3);
-  divider.dimensions[0] = 0.07;
-  divider.dimensions[1] = 0.01;
-  divider.dimensions[2] = 0.15;
 
-  geometry_msgs::Pose divider_pose;
-  tf2::Quaternion quart;
-  quart.setRPY(0, 0, M_PI / 9);
-  geometry_msgs::Quaternion orientation;
-  divider_pose.orientation = tf2::toMsg(quart);
-  // divider1_pose.orientation.w = 1.0;
-  divider_pose.position.x = 0.2;
-  divider_pose.position.y = 0.1;
-  divider_pose.position.z = 0.1;
+  // shaker cup and cap platforms
+  shape_msgs::SolidPrimitive cylinder;
 
-  collision_object.primitives.push_back(divider);
-  collision_object.primitive_poses.push_back(divider_pose);
+  cylinder.type = cylinder.CYLINDER;
+  cylinder.dimensions.resize(2);
 
-  // right divider
-  quart.setRPY(0, 0, -M_PI / 9);
-  divider_pose.orientation = tf2::toMsg(quart);
-  // divider1_pose.orientation.w = 1.0;
-  divider_pose.position.y = -0.1;
+  cylinder.dimensions[0] = 0.084;
+  cylinder.dimensions[1] = 0.04;
 
-  collision_object.primitives.push_back(divider);
-  collision_object.primitive_poses.push_back(divider_pose);
+  box_pose.position.x = 0.18;
+  box_pose.position.y = -0.05;
+  box_pose.position.z += 0.042 + 0.025;
 
-  // divider.dimensions[0] = 0.09;
-  // divider.dimensions[1] = 0.09;
-  // divider.dimensions[2] = 0.01;
+  collision_object.primitives.push_back(cylinder);
+  collision_object.primitive_poses.push_back(box_pose);
 
-  // divider_pose.position.x = 0.18;
-  // divider_pose.position.y = 0.0;
-  // divider_pose.position.z = 0.27;
+  cylinder.dimensions[0] = 0.159;
+  cylinder.dimensions[1] = 0.0443;
 
-  // collision_object.primitives.push_back(divider);
-  // collision_object.primitive_poses.push_back(divider_pose);
-*/
+  box_pose.position.x = 0.15;
+  box_pose.position.y = 0.075;
+  box_pose.position.z += 0.04;
+
+  collision_object.primitives.push_back(cylinder);
+  collision_object.primitive_poses.push_back(box_pose);
+
+  shape_msgs::SolidPrimitive bottle_shelf;
+    bottle_shelf.type = platform.BOX;
+    bottle_shelf.dimensions.resize(3);
+    bottle_shelf.dimensions[0] = 0.05;
+    bottle_shelf.dimensions[1] = 0.17;
+    bottle_shelf.dimensions[2] = 0.1;
+
+    geometry_msgs::Pose shelf_pose;
+    tf2::Quaternion quart;
+    quart.setRPY(0, 0, -M_PI * 65/180 );
+    geometry_msgs::Quaternion orientation;
+    shelf_pose.orientation = tf2::toMsg(quart);
+    shelf_pose.position.x = 0.088;
+    shelf_pose.position.y = -0.15;
+    shelf_pose.position.z = 0.055 + 0.05;
+
+    collision_object.primitives.push_back(bottle_shelf);
+    collision_object.primitive_poses.push_back(shelf_pose);
+  /*
+    // left divider
+    shape_msgs::SolidPrimitive divider;
+    divider.type = platform.BOX;
+    divider.dimensions.resize(3);
+    divider.dimensions[0] = 0.07;
+    divider.dimensions[1] = 0.01;
+    divider.dimensions[2] = 0.15;
+
+    geometry_msgs::Pose divider_pose;
+    tf2::Quaternion quart;
+    quart.setRPY(0, 0, M_PI / 9);
+    geometry_msgs::Quaternion orientation;
+    divider_pose.orientation = tf2::toMsg(quart);
+    // divider1_pose.orientation.w = 1.0;
+    divider_pose.position.x = 0.2;
+    divider_pose.position.y = 0.1;
+    divider_pose.position.z = 0.1;
+
+    collision_object.primitives.push_back(divider);
+    collision_object.primitive_poses.push_back(divider_pose);
+
+    // right divider
+    quart.setRPY(0, 0, -M_PI / 9);
+    divider_pose.orientation = tf2::toMsg(quart);
+    // divider1_pose.orientation.w = 1.0;
+    divider_pose.position.y = -0.1;
+
+    collision_object.primitives.push_back(divider);
+    collision_object.primitive_poses.push_back(divider_pose);
+
+    // divider.dimensions[0] = 0.09;
+    // divider.dimensions[1] = 0.09;
+    // divider.dimensions[2] = 0.01;
+
+    // divider_pose.position.x = 0.18;
+    // divider_pose.position.y = 0.0;
+    // divider_pose.position.z = 0.27;
+
+    // collision_object.primitives.push_back(divider);
+    // collision_object.primitive_poses.push_back(divider_pose);
+  */
   collision_object.operation = collision_object.ADD;
   std::vector<moveit_msgs::CollisionObject> collision_objects;
   collision_objects.push_back(collision_object);

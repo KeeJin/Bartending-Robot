@@ -86,7 +86,7 @@ class DynamixelController
   std::vector<std::pair<std::string, ItemValue>> dynamixel_info_;
   dynamixel_workbench_msgs::DynamixelStateList dynamixel_state_list_;
   // float joint_state_offset_[5] = {-1.2067, 0.0, 0.0, 0.0, 0.6443};
-  float joint_state_offset_[5] = {-1.2067, 0.0, 0.0, 0.0, 0.7261};
+  float joint_state_offset_[5] = {-1.2067, 0.0, 0.0, 0.0, 0.0};
   sensor_msgs::JointState joint_state_msg_;
   std::vector<WayPoint> pre_goal_;
 
