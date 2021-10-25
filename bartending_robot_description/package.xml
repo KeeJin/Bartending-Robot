@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>bartending_robot_description</name>
+  <version>2.2.1</version>
+  <description>
+    This package provides a physical definition for the Bartending robot.
+  </description>
+  <license>Apache 2.0</license>
+  <author email="yoplocheo@gmail.com">Cheo Kee Jin</author>
+  <maintainer email="yoplocheo@gmail.com">Cheo Kee Jin</maintainer>
+  <buildtool_depend>catkin</buildtool_depend>
+</package>

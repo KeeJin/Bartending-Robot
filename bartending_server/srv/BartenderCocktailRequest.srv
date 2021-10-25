@@ -1,0 +1,5 @@
+int8 alcohol
+int8 mixer
+---
+bool success
+string message

@@ -1,0 +1,11 @@
+<launch>
+  <arg name="robot_name"       default="bartender"/>
+  <arg name="planning_group"   default="bartender_arm"/>
+  <arg name="enable_fake_execution"   default="false"/>
+
+  <node name="$(arg planning_group)" pkg="bartending_moveit_service" type="moveit_remapper" output="screen">
+    <param name="planning_group"      value="$(arg planning_group)"/>
+    <param name="enable_fake_execution"      value="$(arg enable_fake_execution)"/>
+    <remap from="$(arg planning_group)/joint_trajectory" to="$(arg robot_name)/joint_trajectory"/>
+  </node>
+</launch>

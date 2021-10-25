@@ -1,0 +1,3 @@
+int16 motor_position
+---
+bool success
